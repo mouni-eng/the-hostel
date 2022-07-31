@@ -48,7 +48,8 @@ class OnBoardingScreen extends StatelessWidget {
                             ),
                             GestureDetector(
                               onTap: () {
-                                rentxcontext.route((context) => const LogInView());
+                                rentxcontext
+                                    .route((context) => const LogInView());
                               },
                               child: CustomText(
                                 fontSize: width(16),
@@ -95,7 +96,8 @@ class OnBoardingScreen extends StatelessWidget {
                                 if (cubit.index != 2) {
                                   cubit.onNextStep();
                                 } else {
-                                  rentxcontext.route((context) => const LogInView());
+                                  rentxcontext
+                                      .route((context) => const LogInView());
                                 }
                               },
                               text: cubit.index != 2 ? "Next" : "Start",
@@ -110,5 +112,3 @@ class OnBoardingScreen extends StatelessWidget {
     );
   }
 }
-
-

@@ -17,26 +17,22 @@ class OnBoardingCubit extends Cubit<OnBoardingStates> {
   List<OnBoardingModel> onBoardingList = [
     OnBoardingModel(
       title: "Real estate offer",
-      image: "assets/images/listing.svg",
+      image: "assets/images/students.svg",
       subTitle: "Thousands of real estate offers in your area",
     ),
     OnBoardingModel(
-      title: "Research your house",
+      title: "Looking for a place to stay!",
       image: "assets/images/searching.svg",
       subTitle:
-          "Very easy way of selection and searching on the map for any requirement",
+          "Through the hostel you can rent a whole apartment or stay with others and rent a room or even a bed",
     ),
     OnBoardingModel(
-      title: "Ready renting your house",
-      image: "assets/images/deal.svg",
+      title: "Need a transportation!",
+      image: "assets/images/transportation.svg",
       subTitle:
-          "You select only the proper apartment for your requirements before you purchase",
+          "We provide several transportation options, to take you from your main home to the hostel home every week and also take you to your university daily",
     ),
   ];
-
-  onPageChanged() {
-    isLast = false;
-  }
 
   onBackStep() {
     index -= 1;

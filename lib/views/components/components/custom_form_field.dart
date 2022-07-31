@@ -80,7 +80,7 @@ class CustomFormField extends StatelessWidget {
                 vertical: isAboutMe == false ? height(10) : height(14)),
             hintStyle: TextStyle(
               fontSize: width(14),
-              color: rentxcontext.theme.customTheme.headline,
+              color: rentxcontext.theme.customTheme.headline3,
             ),
             labelStyle: Theme.of(context).textTheme.subtitle2,
             alignLabelWithHint: false,
@@ -96,6 +96,11 @@ class CustomFormField extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 borderSide: BorderSide(
                   color: rentxcontext.theme.customTheme.inputFieldBorder,
+                )),
+            focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  color: rentxcontext.theme.customTheme.primary,
                 )),
           ),
           style: Theme.of(context).textTheme.bodyText2,

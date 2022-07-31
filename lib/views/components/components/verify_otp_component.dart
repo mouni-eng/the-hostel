@@ -52,7 +52,7 @@ class VerifyOtpWidget extends StatelessWidget {
             children: [
               Center(
                 child: Image(
-                  image: const AssetImage("assets/img/message.png"),
+                  image: const AssetImage("assets/images/message.png"),
                   width: width(130),
                   height: height(130),
                 ),
@@ -61,20 +61,20 @@ class VerifyOtpWidget extends StatelessWidget {
                 height: height(30),
               ),
               CustomText(
-                  align: TextAlign.center,
-                  color: rentXContext.theme.customTheme.headline3,
-                  textOverflow: TextOverflow.clip,
-                  fontSize: width(16),
-                  text: rentXContext
-                      .translate('otpVerification.text')
-                      ),
+                align: TextAlign.center,
+                color: rentXContext.theme.customTheme.headline3,
+                textOverflow: TextOverflow.clip,
+                fontSize: width(16),
+                text: rentXContext
+                    .translate('Please enter the 6 digit code sent to $email'),
+              ),
               SizedBox(
                 height: height(55),
               ),
               CustomText(
                   color: rentXContext.theme.customTheme.headline,
                   fontSize: width(14),
-                  text: "otpVerification"),
+                  text: "Otp Verification"),
               SizedBox(
                 height: height(8),
               ),
@@ -112,7 +112,7 @@ class VerifyOtpWidget extends StatelessWidget {
                     child: CustomText(
                       color: rentXContext.theme.customTheme.primary,
                       fontSize: width(14),
-                      text: "resendCode",
+                      text: "Resend Code",
                     )),
               ),
               SizedBox(
@@ -124,10 +124,11 @@ class VerifyOtpWidget extends StatelessWidget {
                   Container(),
                   CustomButton(
                     showLoader: loading,
-                    text: rentXContext.translate("confirm"),
+                    text: rentXContext.translate("Confirm"),
                     radius: 6,
                     fontSize: width(16),
                     btnWidth: width(132),
+                    btnHeight: height(50),
                     function: onSubmit,
                     isUpperCase: false,
                   ),

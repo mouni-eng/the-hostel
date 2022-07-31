@@ -43,7 +43,7 @@ class OnBoardingBuilder extends StatelessWidget {
           ),
           CustomText(
             fontSize: width(18),
-            maxlines: 3,
+            maxlines: 4,
             text: model.subTitle!,
             color: rentxcontext.theme.customTheme.headline3,
           ),

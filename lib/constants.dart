@@ -9,3 +9,8 @@ BoxShadow boxShadow = BoxShadow(
   blurRadius: width(30), // blur radius
   offset: const Offset(0, 4),
 );
+
+EdgeInsets padding = EdgeInsets.symmetric(
+  horizontal: width(16),
+  vertical: height(16),
+);
