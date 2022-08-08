@@ -5,7 +5,7 @@ import 'package:the_hostel/models/signup_model.dart';
 import 'package:the_hostel/size_config.dart';
 import 'package:the_hostel/view_models/auth_cubit/cubit.dart';
 import 'package:the_hostel/view_models/auth_cubit/states.dart';
-import 'package:the_hostel/views/auth_views/user_registration/user_registration.dart';
+import 'package:the_hostel/views/auth_views/user_registration/userRegistration.dart';
 import 'package:the_hostel/views/components/base_widget.dart';
 import 'package:the_hostel/views/components/components/custom_button.dart';
 import 'package:the_hostel/views/components/components/custom_text.dart';
@@ -59,8 +59,8 @@ class ChooseRoleScreen extends StatelessWidget {
                             function: () {
                               cubit.signUpRequest.role = cubit.category;
 
-                              rentxcontext.route(
-                                  (p0) => const UserRegistrationScreen());
+                              rentxcontext
+                                  .route((p0) => UserRegistrationLayout());
                             },
                             text: "Continue",
                           ),

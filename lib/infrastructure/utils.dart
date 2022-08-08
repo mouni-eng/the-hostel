@@ -13,7 +13,7 @@ void printLn(Object? object) {
 class DateUtil {
   static strDate(final DateTime? dateTime) {
     if (dateTime == null) return '';
-    return '${dateTime.day}/${dateTime.month + 1}/${dateTime.year}';
+    return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
   }
 
   static displayDiffrence(final DateTime from, final DateTime to) {
@@ -33,7 +33,7 @@ class DateUtil {
     }
 
     if (_isSameYear(from, to)) {
-      return '${from.day} ${_labeledMonth(from.month)}-${_labeledDay(to.day.toString())} ${_labeledMonth(to.month)} ${from.year}';
+      return '${_labeledDay(from.day.toString())} ${_labeledMonth(from.month)}-${_labeledDay(to.day.toString())} ${_labeledMonth(to.month)} ${from.year}';
     }
 
     return '${from.day}/${from.month}/${from.year} - ${to.day}/${to.month}/${to.year}';
@@ -54,29 +54,29 @@ class DateUtil {
   static String _getMonthStr(int month) {
     switch (month) {
       case 1:
-        return 'month.january';
+        return 'January';
       case 2:
-        return 'month.february';
+        return 'February';
       case 3:
-        return 'month.march';
+        return 'March';
       case 4:
-        return 'month.april';
+        return 'April';
       case 5:
-        return 'month.may';
+        return 'May';
       case 6:
-        return 'month.june';
+        return 'June';
       case 7:
-        return 'month.july';
+        return 'July';
       case 8:
-        return 'month.august';
+        return 'August';
       case 9:
-        return 'month.september';
+        return 'September';
       case 10:
-        return 'month.october';
+        return 'October';
       case 11:
-        return 'month.november';
+        return 'November';
       case 12:
-        return 'month.december';
+        return 'December';
     }
     throw BusinessException('invalid-month', 'invalid month index: $month');
   }

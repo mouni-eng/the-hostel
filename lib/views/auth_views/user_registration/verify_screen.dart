@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:the_hostel/services/alert_service.dart';
 import 'package:the_hostel/view_models/auth_cubit/cubit.dart';
 import 'package:the_hostel/view_models/auth_cubit/states.dart';
+import 'package:the_hostel/views/auth_views/user_registration/address_selection.dart';
 import 'package:the_hostel/views/components/base_widget.dart';
 import 'package:the_hostel/views/components/components/verify_otp_component.dart';
 
@@ -21,10 +22,9 @@ class VerifyEmailScreen extends StatelessWidget {
                 if (value == null && value!.length < 6) {
                   return 'required';
                 }
-                
               },
               onChanged: cubit.onChangePin,
-              email: cubit.email!,
+              phoneNumber: cubit.phoneNumber!,
               focusNode: cubit.focusNode,
               formKey: cubit.formKey3,
               onSubmit: () {
@@ -33,11 +33,16 @@ class VerifyEmailScreen extends StatelessWidget {
         },
         listener: (context, state) {
           if (state is OtpConfirmedErrorState) {
-              AlertService.showSnackbarAlert(
-                  state.error!, rentxcontext, SnackbarType.error);
-          }else if(state is CodeSentState) {
             AlertService.showSnackbarAlert(
-                  "Code Sent!", rentxcontext, SnackbarType.warning,);
+                state.error!, rentxcontext, SnackbarType.error);
+          } else if (state is CodeSentState) {
+            AlertService.showSnackbarAlert(
+              "Code Sent!",
+              rentxcontext,
+              SnackbarType.warning,
+            );
+          } else if (state is OtpConfirmedSuccessState) {
+            rentxcontext.route((context) => const AddressSelection());
           }
         },
       ),

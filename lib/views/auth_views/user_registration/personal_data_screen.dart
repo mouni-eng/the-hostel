@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:the_hostel/infrastructure/utils.dart';
 import 'package:the_hostel/size_config.dart';
 import 'package:the_hostel/view_models/auth_cubit/cubit.dart';
 import 'package:the_hostel/view_models/auth_cubit/states.dart';
@@ -156,11 +157,11 @@ class CustomDatePicker extends StatelessWidget {
       builder: (rentxcontext) => GestureDetector(
         onTap: () {
           showDatePicker(
-                  context: context,
-                  initialDate: birthdate != null ? birthdate! : DateTime.now(),
-                  firstDate: DateTime(2022, 4),
-                  lastDate: DateTime(DateTime.now().year + 10))
-              .then((value) {
+            context: context,
+            initialDate: birthdate ?? DateTime(2000, 1),
+            firstDate: DateTime(1900, 1),
+            lastDate: DateTime(DateTime.now().year - 18),
+          ).then((value) {
             onChange(value!);
           });
         },
@@ -178,9 +179,11 @@ class CustomDatePicker extends StatelessWidget {
           ),
           child: CustomText(
               fontSize: width(14),
-              color: rentxcontext.theme.customTheme.headline3,
+              color: birthdate != null
+                  ? rentxcontext.theme.customTheme.headline
+                  : rentxcontext.theme.customTheme.headline3,
               text: birthdate != null
-                  ? birthdate!.toString().split(" ").toList()[0]
+                  ? DateUtil.strDate(birthdate)
                   : "Enter here"),
         ),
       ),

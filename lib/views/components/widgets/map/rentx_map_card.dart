@@ -95,7 +95,7 @@ class _RentXMapCardState extends State<RentXMapCard> {
           LatLng(widget.location.latitude, widget.location.longitude),
       builder: (ctx) {
         return SvgPicture.asset(
-          "assets/img/marker.svg",
+          "assets/images/marker.svg",
         );
       },
     );

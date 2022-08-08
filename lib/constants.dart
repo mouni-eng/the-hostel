@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:the_hostel/models/signup_model.dart';
 import 'package:the_hostel/size_config.dart';
 
 const Color kPrimaryColor = Color(0xFF007BFF);
@@ -14,3 +15,5 @@ EdgeInsets padding = EdgeInsets.symmetric(
   horizontal: width(16),
   vertical: height(16),
 );
+
+UserSignUpRequest? userModel;

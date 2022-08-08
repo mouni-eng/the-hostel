@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:the_hostel/services/alert_service.dart';
 import 'package:the_hostel/size_config.dart';
 import 'package:the_hostel/view_models/auth_cubit/cubit.dart';
 import 'package:the_hostel/view_models/auth_cubit/states.dart';
@@ -15,8 +16,7 @@ class AccountDataScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return RentXWidget(
       builder: (rentxcontext) =>
-        BlocConsumer<AuthCubit, AuthStates>(
-          builder: (context, state) {
+          BlocConsumer<AuthCubit, AuthStates>(builder: (context, state) {
         AuthCubit cubit = AuthCubit.get(context);
         return SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -58,11 +58,11 @@ class AccountDataScreen extends StatelessWidget {
                     color: rentxcontext.theme.customTheme.onRejected,
                     fontSize: width(12),
                     text: rentxcontext.translate("Password Dont Match"),
-                ),
-                  SizedBox(
-                  height: height(115),
                   ),
-                  Row(
+                SizedBox(
+                  height: height(115),
+                ),
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     TextButton(
@@ -97,11 +97,11 @@ class AccountDataScreen extends StatelessWidget {
       }, listener: (context, state) {
         AuthCubit.get(context).formKey2.currentState!.validate();
         if (state is RegisterErrorState) {
-          // ErrorService.showSnackbarError(11
-          //   state.error ?? 'unknownError',
-          //   rentxcontext,
-          //   SnackbarType.error,
-          // );
+          AlertService.showSnackbarAlert(
+            state.error ?? 'unknownError',
+            rentxcontext,
+            SnackbarType.error,
+          );
         }
       }),
     );

@@ -29,7 +29,7 @@ class RentXLocationSearchbar extends StatelessWidget {
           vertical: height(17),
         ),
         child: SvgPicture.asset(
-          "assets/img/search.svg",
+          "assets/images/search.svg",
         ),
       ),
       onChange: locationProvider,

@@ -1,6 +1,4 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:the_hostel/infrastructure/utils.dart';
@@ -20,11 +18,8 @@ class AuthCubit extends Cubit<AuthStates> {
   GlobalKey formkey = GlobalKey<FormState>();
   TextEditingController userNameController = TextEditingController();
   TextEditingController userPasswordController = TextEditingController();
-
-  final AuthService _authService = AuthService();
   final FileService _fileService = FileService();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final AuthService _authService = AuthService();
 
   File? profileImage;
   UserSignUpRequest signUpRequest = UserSignUpRequest.instance();
@@ -170,9 +165,7 @@ class AuthCubit extends Cubit<AuthStates> {
 
   logIn() {
     emit(LogInLoadingState());
-    _auth
-        .signInWithEmailAndPassword(email: email!, password: password!)
-        .then((value) {
+    _authService.login(email: email, password: password).then((value) {
       emit(LogInSuccessState());
     }).catchError((error) {
       emit(LogInErrorState(error: error.toString()));
@@ -181,22 +174,15 @@ class AuthCubit extends Cubit<AuthStates> {
 
   saveUser() {
     emit(RegisterLoadingState());
-    _auth
-        .createUserWithEmailAndPassword(
-            email: signUpRequest.email!, password: signUpRequest.password!)
-        .then((value) async {
+    _authService.register(model: signUpRequest).then((value) async {
       await uploadProfilePicture();
-      signUpRequest.personalId = value.user!.uid;
-      _firestore
-          .collection("users")
-          .doc(value.user!.uid)
-          .set(signUpRequest.toJson());
+      _authService.saveUser(model: signUpRequest);
     }).then((value) {
       onNextStep();
       verifyPhoneNumber();
       emit(RegisterSuccessState());
     }).catchError((error) {
-      emit(RegisterErrorState(error: error.toString()));
+      emit(RegisterErrorState(error: error.message));
     });
   }
 
@@ -211,27 +197,21 @@ class AuthCubit extends Cubit<AuthStates> {
   }
 
   verifyPhoneNumber() {
-    _auth.verifyPhoneNumber(
-      phoneNumber: "+20$phoneNumber",
-      verificationCompleted: (PhoneAuthCredential auth) {},
-      verificationFailed: (FirebaseAuthException e) {},
-      codeSent: (String vId, int? token) {
+    _authService.verfiyPhoneNumber(
+      phoneNumber: phoneNumber, onSent: (String vId, int? token) {
         verficationIdChanged(vId);
         emit(CodeSentState());
-      },
-      codeAutoRetrievalTimeout: (String codeRetrival) {},
-    );
+      }
+      );
   }
 
   Future<void> confirmOtp() async {
     emit(OtpConfirmedLoadingState());
-    _auth
-        .signInWithCredential(PhoneAuthProvider.credential(
-            verificationId: verficationId!, smsCode: pin!))
+    _authService.confirmOtp(vId: verficationId!, code: pin)
         .then((value) {
       emit(OtpConfirmedSuccessState());
     }).catchError((error) {
-      emit(OtpConfirmedErrorState(error: error.toString()));
+      emit(OtpConfirmedErrorState(error: error.message));
     });
   }
 

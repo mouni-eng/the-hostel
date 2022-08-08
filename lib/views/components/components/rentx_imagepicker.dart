@@ -33,6 +33,7 @@ class RentXImagePicker extends StatelessWidget {
   void _showBottomSheet(RentXContext context) {
     showModalBottomSheet(
         context: context.context,
+        backgroundColor: Colors.transparent,
         builder: (BuildContext buildContext) {
           return Container(
             decoration: BoxDecoration(
@@ -58,7 +59,7 @@ class RentXImagePicker extends StatelessWidget {
                             color: context.theme.customTheme.primary,
                           ),
                           CustomText(
-                            text: context.translate('gallery'),
+                            text: context.translate('camera'),
                             fontSize: width(12),
                           )
                         ],

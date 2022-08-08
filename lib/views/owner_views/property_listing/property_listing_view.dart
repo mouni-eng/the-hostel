@@ -2,45 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:the_hostel/size_config.dart';
 import 'package:the_hostel/theme/app_theme.dart';
+import 'package:the_hostel/view_models/add_property_cubit/cubit.dart';
+import 'package:the_hostel/view_models/add_property_cubit/states.dart';
 import 'package:the_hostel/view_models/auth_cubit/cubit.dart';
 import 'package:the_hostel/view_models/auth_cubit/states.dart';
 import 'package:the_hostel/views/components/base_widget.dart';
 import 'package:the_hostel/views/components/components/custom_text.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
-
-class UserRegistrationScreen extends StatelessWidget {
-  const UserRegistrationScreen({Key? key}) : super(key: key);
+class PropertyListingView extends StatelessWidget {
+  const PropertyListingView({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return RentXWidget(
-        builder: (rentXContext) => Scaffold(
-              backgroundColor: AppTheme.theme.backgroundColor,
-              body: SafeArea(
+      builder: (rentXContext) => Scaffold(
+          backgroundColor: AppTheme.theme.backgroundColor,
+          body: BlocConsumer<AddPropertyCubit, AddPropertyStates>(
+              listener: (context, state) {},
+              builder: (context, state) {
+                AddPropertyCubit cubit = AddPropertyCubit.get(context);
+                return SafeArea(
                   child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: width(24),
-                  vertical: height(24),
-                ),
-                child: BlocConsumer<AuthCubit, AuthStates>(
-                  listener: (context, state) {
-                    /*if (state is EmailConfirmedState) {
-                      rentXContext.route((p0) => CompletedScreen(
-                            title: 'emailVerified',
-                            text: 'accountSuccessfullyVerified',
-                            onBtnClick: () {
-                              rentXContext.route((p0) =>
-                                  state.loginResponse.role == UserRole.manager
-                                      ? const CompanyRegistrationScreen()
-                                      : const LayoutScreen());
-                            },
-                          ));
-                    }*/
-                  },
-                  builder: (context, state) {
-                    AuthCubit cubit = AuthCubit.get(context);
-                    return Column(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: width(24),
+                      vertical: height(24),
+                    ),
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomText(
@@ -48,7 +38,7 @@ class UserRegistrationScreen extends StatelessWidget {
                             fontSize: width(22),
                             fontWeight: FontWeight.w600,
                             text: rentXContext
-                                .translate(cubit.headers[cubit.index])),
+                                .translate(cubit.header[cubit.index])),
                         SizedBox(
                           height: height(5),
                         ),
@@ -89,16 +79,15 @@ class UserRegistrationScreen extends StatelessWidget {
                             controller: cubit.controller,
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: cubit.steps.length,
-                            itemBuilder: (BuildContext context, int no) {
-                              return cubit.steps[no];
-                            },
+                            itemBuilder: (context, no) =>
+                                cubit.steps[cubit.index],
                           ),
                         ),
                       ],
-                    );
-                  },
-                ),
-              )),
-            ));
+                    ),
+                  ),
+                );
+              })),
+    );
   }
 }

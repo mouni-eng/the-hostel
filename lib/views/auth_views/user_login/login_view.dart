@@ -7,18 +7,19 @@ import 'package:the_hostel/size_config.dart';
 import 'package:the_hostel/view_models/auth_cubit/cubit.dart';
 import 'package:the_hostel/view_models/auth_cubit/states.dart';
 import 'package:the_hostel/views/auth_views/passwordReset_screen.dart';
+import 'package:the_hostel/views/auth_views/user_registration/address_selection.dart';
 import 'package:the_hostel/views/auth_views/user_registration/choose_role_screen.dart';
 import 'package:the_hostel/views/components/base_widget.dart';
 import 'package:the_hostel/views/components/components/custom_button.dart';
 import 'package:the_hostel/views/components/components/custom_form_field.dart';
 import 'package:the_hostel/views/components/components/custom_text.dart';
-import 'package:the_hostel/views/student_views/layout_view.dart';
 
 class LogInView extends StatelessWidget {
   const LogInView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return RentXWidget(
       builder: (rentxcontext) =>
           BlocConsumer<AuthCubit, AuthStates>(listener: (context, state) {
@@ -26,7 +27,7 @@ class LogInView extends StatelessWidget {
           AlertService.showSnackbarAlert(
               state.error.toString(), rentxcontext, SnackbarType.error);
         } else if (state is LogInSuccessState) {
-          rentxcontext.route((context) => const StudentLayoutView());
+          rentxcontext.route((context) => const AddressSelection());
         }
       }, builder: (context, state) {
         AuthCubit cubit = AuthCubit.get(context);
@@ -184,7 +185,8 @@ class PropertiesWidget extends StatelessWidget {
       this.validate,
       this.isPassword = false,
       this.isAboutMe = false,
-      this.isPhoneNumber = false})
+      this.isPhoneNumber = false,
+      this.customBuilder})
       : super(key: key);
 
   final String? title;
@@ -192,35 +194,45 @@ class PropertiesWidget extends StatelessWidget {
   final void Function(String)? onChange;
   final String? Function(String?)? validate;
   final bool isPassword, isAboutMe, isPhoneNumber;
+  final Widget? customBuilder;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomText(
-          fontSize: width(16),
-          text: title!,
-        ),
-        SizedBox(
-          height: height(15),
-        ),
-        CustomFormField(
-          context: context,
-          controller: textEditingController,
-          onChange: onChange,
-          hintText: "Enter here",
-          validate: validate,
-          type: isPhoneNumber == true
-              ? TextInputType.number
-              : TextInputType.emailAddress,
-          isPassword: isPassword,
-          isAboutMe: isAboutMe,
-        ),
-        SizedBox(
-          height: height(25),
-        ),
-      ],
+    return RentXWidget(
+      builder: (rentxcontext) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomText(
+            fontSize: width(16),
+            text: title!,
+          ),
+          SizedBox(
+            height: height(15),
+          ),
+          if (customBuilder == null)
+            CustomFormField(
+              context: context,
+              controller: textEditingController,
+              onChange: onChange,
+              hintText: "Enter here",
+              validate: (value) {
+                if (value!.isEmpty) {
+                  return rentxcontext.translate("please enter your $title");
+                }
+                return null;
+              },
+              type: isPhoneNumber == true
+                  ? TextInputType.number
+                  : TextInputType.emailAddress,
+              isPassword: isPassword,
+              isAboutMe: isAboutMe,
+            ),
+          if (customBuilder != null) customBuilder!,
+          SizedBox(
+            height: height(25),
+          ),
+        ],
+      ),
     );
   }
 }

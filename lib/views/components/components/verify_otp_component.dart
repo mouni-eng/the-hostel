@@ -14,14 +14,14 @@ class VerifyOtpWidget extends StatelessWidget {
       this.validator,
       this.email,
       this.onChanged,
-      this.focusNode})
+      this.focusNode, this.phoneNumber})
       : super(key: key);
 
   final GlobalKey<FormState> formKey;
   final bool? loading;
   final Function() onSubmit;
   final FormFieldValidator<String>? validator;
-  final String? email;
+  final String? email, phoneNumber;
   final ValueChanged<String>? onChanged;
   final FocusNode? focusNode;
 
@@ -66,7 +66,7 @@ class VerifyOtpWidget extends StatelessWidget {
                 textOverflow: TextOverflow.clip,
                 fontSize: width(16),
                 text: rentXContext
-                    .translate('Please enter the 6 digit code sent to $email'),
+                    .translate('Please enter the 6 digit code sent to ${email ?? phoneNumber}'),
               ),
               SizedBox(
                 height: height(55),

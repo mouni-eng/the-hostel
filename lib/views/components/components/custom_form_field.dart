@@ -59,7 +59,7 @@ class CustomFormField extends StatelessWidget {
           onChanged: onChange,
           onTap: onTap,
           textAlign: TextAlign.left,
-          textAlignVertical: TextAlignVertical.center,
+          textAlignVertical: TextAlignVertical.top,
           validator: validate,
           decoration: InputDecoration(
             labelText: label,
@@ -75,9 +75,11 @@ class CustomFormField extends StatelessWidget {
             focusColor: Colors.transparent,
             prefixIcon: prefix,
             suffixIcon: suffix,
-            contentPadding: EdgeInsets.symmetric(
-                horizontal: isMapSearch == true ? 0 : width(15),
-                vertical: isAboutMe == false ? height(10) : height(14)),
+            contentPadding: EdgeInsets.only(
+                right: isMapSearch == true ? 0 : width(15),
+                top: isAboutMe == false ? height(10) : height(80),
+                bottom: isAboutMe == false ? height(10) : height(50),
+                left: isMapSearch == true ? 0 : width(15)),
             hintStyle: TextStyle(
               fontSize: width(14),
               color: rentxcontext.theme.customTheme.headline3,

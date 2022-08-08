@@ -1,19 +1,19 @@
 enum RentXLocationType { city, fullAddress }
 
 class RentXLocation {
-  final String street;
-  final String city;
-  final String state;
-  final String zip;
+  final String? street;
+  final String? city;
+  final String? state;
+  final String? zip;
   final double latitude;
   final double longitude;
   final RentXLocationType? locationType;
 
   RentXLocation(
-      {required this.street,
-      required this.city,
-      required this.state,
-      required this.zip,
+      {this.street,
+       this.city,
+       this.state,
+       this.zip,
       this.locationType,
       required this.latitude,
       required this.longitude});
