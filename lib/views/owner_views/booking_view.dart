@@ -42,7 +42,7 @@ class BookingView extends StatelessWidget {
                           CustomText(
                             color: rentxcontext.theme.customTheme.headline,
                             fontSize: width(24),
-                            text: "Booking List",
+                            text: "Booking List (3)",
                             fontWeight: FontWeight.w600,
                           ),
                           SizedBox(
@@ -79,7 +79,6 @@ class CustomBookingScreenCard extends StatelessWidget {
       builder: (rentxcontext) => BlocConsumer<OwnerCubit, OwnerStates>(
           listener: (context, state) {},
           builder: (context, state) {
-            print(DateTime.tryParse("2022-07-09 22:02:30.905875"));
             return GestureDetector(
               onTap: () {
                 rentxcontext.route((context) => BookingDetailsScreen());
@@ -180,8 +179,7 @@ class CustomBookingScreenCard extends StatelessWidget {
                               Expanded(
                                 child: CustomText(
                                   fontSize: width(12),
-                                  text:
-                                      "Ashrafya compund, Fifth districtttttttttttttttttttttt",
+                                  text: "Ashrafya compund, Fifth district",
                                   color:
                                       rentxcontext.theme.customTheme.headline3,
                                 ),

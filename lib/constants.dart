@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:the_hostel/models/signup_model.dart';
 import 'package:the_hostel/size_config.dart';
 
@@ -14,6 +15,10 @@ BoxShadow boxShadow = BoxShadow(
 EdgeInsets padding = EdgeInsets.symmetric(
   horizontal: width(16),
   vertical: height(16),
+);
+
+const Widget loading = Center(
+  child: CircularProgressIndicator.adaptive(),
 );
 
 UserSignUpRequest? userModel;

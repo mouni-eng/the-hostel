@@ -1,3 +1,4 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:the_hostel/size_config.dart';
@@ -21,44 +22,51 @@ class RealEstatesView extends StatelessWidget {
           listener: (context, state) {},
           builder: (context, state) {
             AddPropertyCubit cubit = AddPropertyCubit.get(context);
-            return SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(
-                    fontSize: width(20),
-                    text: "Real estate List",
-                    fontWeight: FontWeight.w600,
-                    color: color.headline,
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomText(
+                  fontSize: width(20),
+                  text: "Apartments List (${cubit.apartments.length})",
+                  fontWeight: FontWeight.w600,
+                  color: color.headline,
+                ),
+                SizedBox(
+                  height: height(25),
+                ),
+                ConditionalBuilder(
+                  condition: state is! GetApartmentLoadingState,
+                  builder: (context) {
+                    return ListView.separated(
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context, index) =>
+                           HorizontalPropertyWidget(
+                            appartmentModel: cubit.apartments[index],
+                           ),
+                      separatorBuilder: (context, index) => SizedBox(
+                        height: height(25),
+                      ),
+                      itemCount: cubit.apartments.length,
+                    );
+                  },
+                  fallback: (context) => const Center(
+                    child: CircularProgressIndicator.adaptive(),
                   ),
-                  SizedBox(
-                    height: height(25),
-                  ),
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) =>
-                        const RentalPropertyWidget(),
-                    separatorBuilder: (context, index) => SizedBox(
-                      height: height(25),
-                    ),
-                    itemCount: 5,
-                  ),
-                  SizedBox(
-                    height: height(25),
-                  ),
-                  CustomButton(
-                    fontSize: width(18),
-                    function: () {
-                      rentxcontext.route(
-                        (context) => PropertyListingView(),
-                      );
-                    },
-                    text: "Add Real estate",
-                  ),
-                ],
-              ),
+                ),
+                SizedBox(
+                  height: height(25),
+                ),
+                CustomButton(
+                  fontSize: width(18),
+                  function: () {
+                    rentxcontext.route(
+                      (context) => PropertyListingView(),
+                    );
+                  },
+                  text: "Add Real estate",
+                ),
+              ],
             );
           });
     });

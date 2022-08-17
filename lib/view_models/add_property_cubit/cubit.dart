@@ -3,8 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:the_hostel/constants.dart';
+import 'package:the_hostel/models/address.dart';
 import 'package:the_hostel/models/appartment_model.dart';
+import 'package:the_hostel/services/apartment_service.dart';
+import 'package:the_hostel/services/file_service.dart';
 import 'package:the_hostel/view_models/add_property_cubit/states.dart';
+import 'package:the_hostel/views/auth_views/user_registration/address_selection.dart';
 import 'package:the_hostel/views/owner_views/property_listing/additional_info_view.dart';
 import 'package:the_hostel/views/owner_views/property_listing/appartment_info_view.dart';
 import 'package:the_hostel/views/owner_views/property_listing/basic_info_view.dart';
@@ -16,14 +21,36 @@ class AddPropertyCubit extends Cubit<AddPropertyStates> {
 
   int index = 0;
   bool isLast = false;
-  double percent = 1 / 3;
+  double percent = 1 / 4;
   final GlobalKey basicFormkey = GlobalKey<FormState>();
+  final ApartmentService _apartmentService = ApartmentService();
+  final FileService _fileService = FileService();
 
   PageController controller = PageController();
 
   int? featured;
 
   List<File> images = [];
+  List<AppartmentModel> apartments = [];
+
+  getApartments() {
+    emit(GetApartmentLoadingState());
+    _apartmentService.getApartment().then((value) {
+      print(value.docs.length);
+      if (value.docs.isEmpty) {
+        emit(GetApartmentSuccessState());
+      }
+      for (var apartment in value.docs) {
+        print(apartment.data());
+        apartments.add(AppartmentModel.fromJson(apartment.data()));
+        print(apartments[0].studyingPlaceFeatures![0].value);
+        emit(GetApartmentSuccessState());
+      }
+    }).catchError((error) {
+      print(error.toString());
+      emit(GetApartmentErrorState());
+    });
+  }
 
   var picker = ImagePicker();
 
@@ -41,73 +68,78 @@ class AddPropertyCubit extends Cubit<AddPropertyStates> {
     BasicInfo(),
     ApartmentInfoView(),
     AdditionalInfoView(),
+    AddressApartmentSelection(),
   ];
 
   List<String> header = [
     "Basic Info",
     "Apartment Info",
     "Additional Info",
+    "Address Seclection",
   ];
-  HostelDuration? duration;
-  String? name, description;
-  double? price;
-  int? floor, rooms, bathrooms, capacity;
-  Elevation? elevation;
-  Rent? rent;
+
+  AppartmentModel appartmentModel = AppartmentModel.instance();
 
   onChooseDuration(HostelDuration value) {
-    duration = value;
+    appartmentModel.duration = value;
     emit(OnChangePropertyState());
   }
 
   onChooseElevation(Elevation value) {
-    elevation = value;
+    appartmentModel.elevation = value;
     emit(OnChangePropertyState());
   }
 
   onChooseRent(Rent value) {
-    rent = value;
+    appartmentModel.rent = value;
     emit(OnChangePropertyState());
   }
 
+  onChooseAddress(Address value) {
+    appartmentModel.address = value;
+    emit(OnChangePropertyState());
+
+    addApartment();
+  }
+
   onChoosename(String value) {
-    name = value;
+    appartmentModel.name = value;
     emit(OnChangePropertyState());
   }
 
   onChoosedescription(String value) {
-    description = value;
+    appartmentModel.description = value;
     emit(OnChangePropertyState());
   }
 
   onChoosePrice(double value) {
-    price = value;
+    appartmentModel.price = value;
     emit(OnChangePropertyState());
   }
 
   onChoosefloor(int value) {
-    floor = value;
+    appartmentModel.floor = value;
     emit(OnChangePropertyState());
   }
 
   onChooserooms(int value) {
-    rooms = value;
+    appartmentModel.rooms = value;
     emit(OnChangePropertyState());
   }
 
   onChoosebathrooms(int value) {
-    bathrooms = value;
+    appartmentModel.bathroom = value;
     emit(OnChangePropertyState());
   }
 
   onChoosecapacity(int value) {
-    capacity = value;
+    appartmentModel.capacity = value;
     emit(OnChangePropertyState());
   }
 
   onBackStep() {
-    if (percent != 1 / 3) {
-      percent -= 1 / 3;
+    if (percent != 1 / 4) {
+      percent -= 1 / 4;
       index -= 1;
       isLast = false;
       emit(OnChangePropertyState());
@@ -122,9 +154,9 @@ class AddPropertyCubit extends Cubit<AddPropertyStates> {
 
   onNextStep() {
     if (percent != 1) {
-      percent += 1 / 3;
+      percent += 1 / 4;
       index += 1;
-      if (index == 2) {
+      if (index == 3) {
         isLast = true;
       }
       emit(OnChangePropertyState());
@@ -136,24 +168,69 @@ class AddPropertyCubit extends Cubit<AddPropertyStates> {
         curve: Curves.fastLinearToSlowEaseIn);
   }
 
+  Future<void> uploadImages() async {
+    for (var image in images) {
+      await _fileService.uploadFile(image).then((value) {
+        appartmentModel.images.add(value);
+        print(value);
+        emit(OnChangePropertyState());
+      });
+    }
+  }
+
   onAddBedFeatures(int value) {
     bedFeatures[value].selected = !bedFeatures[value].selected;
+    appartmentModel.bedFeatures = bedFeatures;
     emit(OnChangePropertyState());
   }
 
   onAddbathroomFeatures(int value) {
     bathroomFeatures[value].selected = !bathroomFeatures[value].selected;
+    appartmentModel.bathroomFeatures = bathroomFeatures;
     emit(OnChangePropertyState());
   }
 
   onAddkitchenFeatures(int value) {
     kitchenFeatures[value].selected = !kitchenFeatures[value].selected;
+    appartmentModel.kitchenFeatures = kitchenFeatures;
     emit(OnChangePropertyState());
   }
 
   onAddheatingAndCoolingFeatures(int value) {
     heatingAndCooling[value].selected = !heatingAndCooling[value].selected;
+    appartmentModel.heatingAndCooling = heatingAndCooling;
     emit(OnChangePropertyState());
+  }
+
+  onAddConnectionFeatures(int value) {
+    connectionFeatutres[value].selected = !connectionFeatutres[value].selected;
+    appartmentModel.connectionFeatures = connectionFeatutres;
+    emit(OnChangePropertyState());
+  }
+
+  onAddStudyingPlaceFeatures(int value) {
+    studyingFeatures[value].selected = !studyingFeatures[value].selected;
+    appartmentModel.studyingPlaceFeatures = studyingFeatures;
+    emit(OnChangePropertyState());
+  }
+
+  onAddEntertainmentFeatures(int value) {
+    entertainmentFeatures[value].selected =
+        !entertainmentFeatures[value].selected;
+    appartmentModel.entertainmentFeatures = entertainmentFeatures;
+    emit(OnChangePropertyState());
+  }
+
+  addApartment() async {
+    emit(AddApartmentLoadingState());
+    await uploadImages();
+    appartmentModel.apUid = UniqueKey().hashCode.toString();
+    appartmentModel.agentUid = userModel!.personalId;
+    _apartmentService.addApartment(appartmentModel).then((value) {
+      emit(AddApartmentSuccessState());
+    }).catchError((error) {
+      emit(AddApartmentErrorState());
+    });
   }
 
   List<BedFeaturesClass> bedFeatures = [
@@ -233,5 +310,25 @@ class AddPropertyCubit extends Cubit<AddPropertyStates> {
     HeatingAndCoolingClass(
         featuretype: HeatingAndCooling.heating, value: "Heating"),
     HeatingAndCoolingClass(featuretype: HeatingAndCooling.fan, value: "fan"),
+  ];
+
+  List<ConnectionFeaturesClass> connectionFeatutres = [
+    ConnectionFeaturesClass(featuretype: Connection.wifi, value: "WIFI"),
+    ConnectionFeaturesClass(
+      featuretype: Connection.signal,
+      value: "Signal",
+    ),
+  ];
+
+  List<StudyingPlaceFeaturesClass> studyingFeatures = [
+    StudyingPlaceFeaturesClass(featuretype: StudyingPlace.desk, value: "Desk"),
+    StudyingPlaceFeaturesClass(
+        featuretype: StudyingPlace.drawingTable, value: "Drawing Table"),
+  ];
+
+  List<EntertainmentFeaturesClass> entertainmentFeatures = [
+    EntertainmentFeaturesClass(
+        featuretype: Entertainment.playstation, value: "Playstation"),
+    EntertainmentFeaturesClass(featuretype: Entertainment.tv, value: "Tv"),
   ];
 }

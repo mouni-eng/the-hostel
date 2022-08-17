@@ -87,4 +87,16 @@ class LocationCubit extends Cubit<LocationStates> {
       emit(LocationErrorState(error: err.toString()));
     });
   }
+
+  bool isVisible = false;
+
+  searchOnChange() {
+    isVisible = !isVisible;
+    emit(OnChangeState());
+  }
+
+  searchOnTap() {
+    isVisible = true;
+    emit(OnChangeState());
+  }
 }

@@ -96,8 +96,8 @@ class CustomTheme {
       this.onApprove = const Color(0xFF219653),
       this.onRejected = const Color(0xFFEB5757),
       this.textColor = const Color(0xffe6e6e6),
-      this.kSecondaryColorBold = const Color(0xFF616A80),
-      this.inputFieldFillBold = const Color(0xFFBDBDBD),
+      this.kSecondaryColorBold = const Color(0xFFE3E9F5),
+      this.inputFieldFillBold = const Color(0xFFE3E9F5),
       this.iconColor = const Color(0xff2E70E2)});
 
   //--------------------------------------  Custom App Theme ----------------------------------------//

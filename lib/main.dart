@@ -5,10 +5,14 @@ import 'package:flutter_portal/flutter_portal.dart';
 import 'package:the_hostel/services/local/cache_helper.dart';
 import 'package:the_hostel/view_models/add_property_cubit/cubit.dart';
 import 'package:the_hostel/view_models/auth_cubit/cubit.dart';
+import 'package:the_hostel/view_models/home_cubit/cubit.dart';
 import 'package:the_hostel/view_models/location_cubit/cubit.dart';
 import 'package:the_hostel/view_models/onBoarding_cubit/cubit.dart';
 import 'package:the_hostel/view_models/owner_cubit/cubit.dart';
+import 'package:the_hostel/view_models/profile_cubit/cubit.dart';
+import 'package:the_hostel/view_models/student_cubit/cubit.dart';
 import 'package:the_hostel/views/owner_views/owner_layout_view.dart';
+import 'package:the_hostel/views/student_views/layout_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,13 +33,16 @@ class TheHostel extends StatelessWidget {
         BlocProvider(create: (_) => AuthCubit()),
         BlocProvider(create: (_) => LocationCubit()..fetchData()),
         BlocProvider(create: (_) => OwnerCubit()..getUser()),
-        BlocProvider(create: (_) => AddPropertyCubit()),
+        BlocProvider(create: (_) => AddPropertyCubit()..getApartments()),
+        BlocProvider(create: (_) => ProfileCubit()),
+        BlocProvider(create: (_) => StudentCubit()),
+        BlocProvider(create: (_) => HomeCubit()..getUser()),
       ],
       child: const Portal(
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'The hostel',
-          home: OwnerLayoutView(),
+          home: StudentLayoutView(),
         ),
       ),
     );

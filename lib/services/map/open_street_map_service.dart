@@ -18,7 +18,7 @@ class OpenStreetMapService implements MapService {
 
   @override
   Future<List<RentXLocation>> query(final String address) async {
-    final Uri fullUri = Uri.parse('$_searchApi}&q=$address}&&countrycodes=al');
+    final Uri fullUri = Uri.parse('$_searchApi}&q=$address}&&countrycodes=EG');
     var response = await get(fullUri);
     if (response.statusCode != 200) {
       throw ApiException('openStreet-error', response.body);

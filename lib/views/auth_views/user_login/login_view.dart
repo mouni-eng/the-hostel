@@ -6,6 +6,7 @@ import 'package:the_hostel/services/alert_service.dart';
 import 'package:the_hostel/size_config.dart';
 import 'package:the_hostel/view_models/auth_cubit/cubit.dart';
 import 'package:the_hostel/view_models/auth_cubit/states.dart';
+import 'package:the_hostel/view_models/location_cubit/cubit.dart';
 import 'package:the_hostel/views/auth_views/passwordReset_screen.dart';
 import 'package:the_hostel/views/auth_views/user_registration/address_selection.dart';
 import 'package:the_hostel/views/auth_views/user_registration/choose_role_screen.dart';
@@ -27,7 +28,7 @@ class LogInView extends StatelessWidget {
           AlertService.showSnackbarAlert(
               state.error.toString(), rentxcontext, SnackbarType.error);
         } else if (state is LogInSuccessState) {
-          rentxcontext.route((context) => const AddressSelection());
+          rentxcontext.route((context) => AddressSelection());
         }
       }, builder: (context, state) {
         AuthCubit cubit = AuthCubit.get(context);
@@ -186,7 +187,8 @@ class PropertiesWidget extends StatelessWidget {
       this.isPassword = false,
       this.isAboutMe = false,
       this.isPhoneNumber = false,
-      this.customBuilder})
+      this.customBuilder,
+      this.length})
       : super(key: key);
 
   final String? title;
@@ -194,7 +196,8 @@ class PropertiesWidget extends StatelessWidget {
   final void Function(String)? onChange;
   final String? Function(String?)? validate;
   final bool isPassword, isAboutMe, isPhoneNumber;
-  final Widget? customBuilder;
+  final Widget Function(BuildContext, int)? customBuilder;
+  final int? length;
 
   @override
   Widget build(BuildContext context) {
@@ -227,7 +230,19 @@ class PropertiesWidget extends StatelessWidget {
               isPassword: isPassword,
               isAboutMe: isAboutMe,
             ),
-          if (customBuilder != null) customBuilder!,
+          if (customBuilder != null)
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: length,
+              itemBuilder: customBuilder!,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 4,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+            ),
           SizedBox(
             height: height(25),
           ),

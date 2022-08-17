@@ -35,11 +35,12 @@ class BookingDetailsScreen extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  BackButtonWidget(
+                  CustomBorderWidget(
                     onTap: () {
                       rentxcontext.pop();
                     },
                     rentxcontext: rentxcontext,
+                    iconData: const Icon(Icons.arrow_back_ios_new_rounded),
                   ),
                   SizedBox(
                     width: width(16),

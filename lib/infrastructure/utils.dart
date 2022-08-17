@@ -96,7 +96,7 @@ class DateUtil {
 
 class EnumUtil {
   static T strToEnum<T extends Enum>(List<T> values, String str) {
-    return values.firstWhere((element) => str.toLowerCase() == element.name);
+    return values.firstWhere((element) => str.toLowerCase() == element.name, orElse: () => values.firstWhere((element) => str == element.name,), );
   }
 
   static T? strToEnumNullable<T extends Enum>(List<T> values, String? str) {

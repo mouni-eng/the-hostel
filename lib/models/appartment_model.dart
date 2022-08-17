@@ -2,23 +2,31 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:the_hostel/infrastructure/request.dart';
 import 'package:the_hostel/infrastructure/utils.dart';
+import 'package:the_hostel/models/address.dart';
 
 class AppartmentModel extends RentXSerialized {
-  String? name, description;
+  String? name, description, apUid, agentUid, rating;
+  Address? address;
   int? floor, rooms, bathroom, capacity;
   double? price;
   HostelDuration? duration;
   Elevation? elevation;
   Rent? rent;
-  List<String>? images;
+  List<String> images = [];
   List<BedFeaturesClass>? bedFeatures;
   List<HeatingAndCoolingClass>? heatingAndCooling;
   List<BathroomFeaturesClass>? bathroomFeatures;
   List<KitchenFeaturesClass>? kitchenFeatures;
+  List<ConnectionFeaturesClass>? connectionFeatures;
+  List<StudyingPlaceFeaturesClass>? studyingPlaceFeatures;
+  List<EntertainmentFeaturesClass>? entertainmentFeatures;
+
+  AppartmentModel.instance();
 
   AppartmentModel({
     required this.name,
     required this.description,
+    required this.address,
     required this.floor,
     required this.rooms,
     required this.bathroom,
@@ -32,11 +40,22 @@ class AppartmentModel extends RentXSerialized {
     required this.bathroomFeatures,
     required this.heatingAndCooling,
     required this.kitchenFeatures,
+    required this.connectionFeatures,
+    required this.studyingPlaceFeatures,
+    required this.entertainmentFeatures,
+    required this.apUid,
+    required this.agentUid,
+    required this.rating,
   });
 
   AppartmentModel.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     description = json['description'];
+    apUid = json['apUid'];
+    agentUid = json['agentUid'];
+    rating = json['rating'] ?? "NA";
+    address =
+        json['address'] != null ? Address.fromJson(json['address']) : null;
     floor = json['floor'];
     rooms = json['rooms'];
     bathroom = json['bathroom'];
@@ -46,12 +65,20 @@ class AppartmentModel extends RentXSerialized {
     elevation = EnumUtil.strToEnum(Elevation.values, json['elevation']);
     rent = EnumUtil.strToEnum(Rent.values, json['rent']);
     images = convertList(json['images'] as List, (p0) => p0);
-    bedFeatures = super.convertList(
+    bedFeatures = convertList(
         json['bedFeatures'] as List, (p0) => BedFeaturesClass.fromJson(p0));
-    heatingAndCooling = super.convertList(json['heatingAndCooling'] as List,
+    heatingAndCooling = convertList(json['heatingAndCooling'] as List,
         (p0) => HeatingAndCoolingClass.fromJson(p0));
-    kitchenFeatures = super.convertList(json['kitchenFeatures'] as List,
+    kitchenFeatures = convertList(json['kitchenFeatures'] as List,
         (p0) => KitchenFeaturesClass.fromJson(p0));
+    connectionFeatures = convertList(json['connectionFeatures'] as List,
+        (p0) => ConnectionFeaturesClass.fromJson(p0));
+    entertainmentFeatures = convertList(
+        json['entertainmentFeatures'] as List,
+        (p0) => EntertainmentFeaturesClass.fromJson(p0));
+    studyingPlaceFeatures = convertList(
+        json['studyingPlaceFeatures'] as List,
+        (p0) => StudyingPlaceFeaturesClass.fromJson(p0));
   }
 
   @override
@@ -59,6 +86,10 @@ class AppartmentModel extends RentXSerialized {
     return {
       'name': name,
       'description': description,
+      'apUid': apUid,
+      'agentUid': agentUid,
+      'rating': rating ?? "NA",
+      'address': address == null ? null : address!.toJson(),
       'floor': floor,
       'rooms': rooms,
       'bathroom': bathroom,
@@ -67,7 +98,7 @@ class AppartmentModel extends RentXSerialized {
       'duration': duration!.name,
       'elevation': elevation!.name,
       'rent': rent!.name,
-      'images': images == null ? [] : images!.map((e) => e).toList(),
+      'images': images == null ? [] : images.map((e) => e).toList(),
       'bedFeatures': bedFeatures == null
           ? []
           : bedFeatures!.map((e) => e.toJson()).toList(),
@@ -80,6 +111,15 @@ class AppartmentModel extends RentXSerialized {
       'kitchenFeatures': kitchenFeatures == null
           ? []
           : kitchenFeatures!.map((e) => e.toJson()).toList(),
+      'connectionFeatures': connectionFeatures == null
+          ? []
+          : connectionFeatures!.map((e) => e.toJson()).toList(),
+      'studyingPlaceFeatures': studyingPlaceFeatures == null
+          ? []
+          : studyingPlaceFeatures!.map((e) => e.toJson()).toList(),
+      'entertainmentFeatures': entertainmentFeatures == null
+          ? []
+          : entertainmentFeatures!.map((e) => e.toJson()).toList(),
     };
   }
 }
@@ -89,18 +129,23 @@ class BedFeaturesClass extends RentXSerialized {
   String value;
   bool selected;
 
-
-  BedFeaturesClass({required this.featuretype, required this.value, this.selected = false});
+  BedFeaturesClass(
+      {required this.featuretype, required this.value, this.selected = false});
 
   static BedFeaturesClass fromJson(Map<String, dynamic> json) {
     return BedFeaturesClass(
-        featuretype: EnumUtil.strToEnum(BedFeatures.values, json['key']),
-        value: json['value'],
-        selected: json['selected'],);
+      featuretype: EnumUtil.strToEnum(BedFeatures.values, json['key']),
+      value: json['value'],
+      selected: json['selected'],
+    );
   }
 
   Map<String, dynamic> toJson() {
-    return {'key': featuretype.name, 'value': value, 'selected': selected,};
+    return {
+      'key': featuretype.name,
+      'value': value,
+      'selected': selected,
+    };
   }
 }
 
@@ -109,18 +154,23 @@ class HeatingAndCoolingClass {
   String value;
   bool selected;
 
-  HeatingAndCoolingClass({required this.featuretype, required this.value, this.selected = false});
+  HeatingAndCoolingClass(
+      {required this.featuretype, required this.value, this.selected = false});
 
   static HeatingAndCoolingClass fromJson(Map<String, dynamic> json) {
     return HeatingAndCoolingClass(
-        featuretype: EnumUtil.strToEnum(HeatingAndCooling.values, json['key']),
-        value: json['value'],
-                selected: json['selected'],
-);
+      featuretype: EnumUtil.strToEnum(HeatingAndCooling.values, json['key']),
+      value: json['value'],
+      selected: json['selected'],
+    );
   }
 
   Map<String, dynamic> toJson() {
-    return {'key': featuretype.name, 'value': value, 'selected': selected,};
+    return {
+      'key': featuretype.name,
+      'value': value,
+      'selected': selected,
+    };
   }
 }
 
@@ -129,18 +179,23 @@ class BathroomFeaturesClass {
   String value;
   bool selected;
 
-  BathroomFeaturesClass({required this.featuretype, required this.value, this.selected = false});
+  BathroomFeaturesClass(
+      {required this.featuretype, required this.value, this.selected = false});
 
   static BathroomFeaturesClass fromJson(Map<String, dynamic> json) {
     return BathroomFeaturesClass(
-        featuretype: EnumUtil.strToEnum(BathroomFeatures.values, json['key']),
-        value: json['value'],
-        selected: json['selected'],
-      );
+      featuretype: EnumUtil.strToEnum(BathroomFeatures.values, json['key']),
+      value: json['value'],
+      selected: json['selected'],
+    );
   }
 
   Map<String, dynamic> toJson() {
-    return {'key': featuretype.name, 'value': value, 'selected': selected,};
+    return {
+      'key': featuretype.name,
+      'value': value,
+      'selected': selected,
+    };
   }
 }
 
@@ -154,9 +209,73 @@ class KitchenFeaturesClass {
 
   static KitchenFeaturesClass fromJson(Map<String, dynamic> json) {
     return KitchenFeaturesClass(
-        featuretype: EnumUtil.strToEnum(KitchenFeatures.values, json['key']),
-        value: json['value'],
-        selected: json['selected'],);
+      featuretype: EnumUtil.strToEnum(KitchenFeatures.values, json['key']),
+      value: json['value'],
+      selected: json['selected'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'key': featuretype.name, 'value': value, 'selected': selected};
+  }
+}
+
+class ConnectionFeaturesClass {
+  Connection featuretype;
+  String value;
+  bool selected;
+
+  ConnectionFeaturesClass(
+      {required this.featuretype, required this.value, this.selected = false});
+
+  static ConnectionFeaturesClass fromJson(Map<String, dynamic> json) {
+    return ConnectionFeaturesClass(
+      featuretype: EnumUtil.strToEnum(Connection.values, json['key']),
+      value: json['value'],
+      selected: json['selected'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'key': featuretype.name, 'value': value, 'selected': selected};
+  }
+}
+
+class StudyingPlaceFeaturesClass {
+  StudyingPlace featuretype;
+  String value;
+  bool selected;
+
+  StudyingPlaceFeaturesClass(
+      {required this.featuretype, required this.value, this.selected = false});
+
+  static StudyingPlaceFeaturesClass fromJson(Map<String, dynamic> json) {
+    return StudyingPlaceFeaturesClass(
+      featuretype: EnumUtil.strToEnum(StudyingPlace.values, json['key']),
+      value: json['value'],
+      selected: json['selected'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'key': featuretype.name, 'value': value, 'selected': selected};
+  }
+}
+
+class EntertainmentFeaturesClass {
+  Entertainment featuretype;
+  String value;
+  bool selected;
+
+  EntertainmentFeaturesClass(
+      {required this.featuretype, required this.value, this.selected = false});
+
+  static EntertainmentFeaturesClass fromJson(Map<String, dynamic> json) {
+    return EntertainmentFeaturesClass(
+      featuretype: EnumUtil.strToEnum(Entertainment.values, json['key']),
+      value: json['value'],
+      selected: json['selected'],
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -201,6 +320,21 @@ enum BathroomFeatures {
   hairdryer,
   bathtub,
   washer,
+}
+
+enum StudyingPlace {
+  desk,
+  drawingTable,
+}
+
+enum Connection {
+  wifi,
+  signal,
+}
+
+enum Entertainment {
+  tv,
+  playstation,
 }
 
 extension BedFeaturesExtension on BedFeatures {
@@ -283,6 +417,68 @@ extension HeatingAndCoolingExtension on HeatingAndCooling {
         return Icons.filter_vintage_outlined;
       case HeatingAndCooling.heating:
         return Icons.whatshot_outlined;
+      default:
+        return null;
+    }
+  }
+}
+
+extension ConnectionExtension on Connection {
+  String get name => describeEnum(this);
+
+  IconData? get icon {
+    switch (this) {
+      case Connection.wifi:
+        return Icons.wifi_outlined;
+      case Connection.signal:
+        return Icons.signal_cellular_alt_outlined;
+      default:
+        return null;
+    }
+  }
+}
+
+extension StudyingPlaceExtension on StudyingPlace {
+  String get name => describeEnum(this);
+
+  IconData? get icon {
+    switch (this) {
+      case StudyingPlace.desk:
+        return Icons.desk_outlined;
+      case StudyingPlace.drawingTable:
+        return Icons.architecture_outlined;
+      default:
+        return null;
+    }
+  }
+}
+
+extension EntertainmentExtension on Entertainment {
+  String get name => describeEnum(this);
+
+  IconData? get icon {
+    switch (this) {
+      case Entertainment.playstation:
+        return Icons.gamepad_outlined;
+      case Entertainment.tv:
+        return Icons.tv_outlined;
+      default:
+        return null;
+    }
+  }
+}
+
+extension RentExtension on Rent {
+  String get name => describeEnum(this);
+
+  IconData? get icon {
+    switch (this) {
+      case Rent.appartment:
+        return Icons.apartment_rounded;
+      case Rent.room:
+        return Icons.meeting_room_rounded;
+      case Rent.bed:
+        return Icons.bed_rounded;
       default:
         return null;
     }

@@ -9,12 +9,17 @@ import '../../components/custom_text.dart';
 class RentXLocationSearchbar extends StatelessWidget {
   final Future<List<RentXLocation>> Function(String) locationProvider;
   final Function(RentXLocation) onLocationPick;
-    final void Function() onDismiss;
+  final void Function() onDismiss;
   final void Function() onTap;
   final bool isVisible;
 
   const RentXLocationSearchbar(
-      {Key? key, required this.locationProvider, required this.onLocationPick, required this.onDismiss, required this.onTap, required this.isVisible})
+      {Key? key,
+      required this.locationProvider,
+      required this.onLocationPick,
+      required this.onDismiss,
+      required this.onTap,
+      required this.isVisible})
       : super(key: key);
 
   @override
@@ -23,6 +28,15 @@ class RentXLocationSearchbar extends StatelessWidget {
       isVissible: isVisible,
       onDismiss: onDismiss,
       onTap: onTap,
+      suffixIcon: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: width(17),
+          vertical: height(17),
+        ),
+        child: SvgPicture.asset(
+          "assets/images/close.svg",
+        ),
+      ),
       leadingIcon: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: width(17),
