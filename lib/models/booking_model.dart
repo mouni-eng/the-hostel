@@ -5,11 +5,13 @@ import 'package:the_hostel/extensions/string_extension.dart';
 import 'package:the_hostel/infrastructure/request.dart';
 import 'package:the_hostel/infrastructure/utils.dart';
 import 'package:the_hostel/models/address.dart';
+import 'package:the_hostel/models/appartment_model.dart';
+import 'package:the_hostel/models/signup_model.dart';
 import 'package:the_hostel/views/components/base_widget.dart';
 
 class ManagerBookingsModel {
   ManagerCompany? company;
-  List<CompanyBooking>? bookings;
+  List<ApartmentBooking>? bookings;
 
   ManagerBookingsModel({this.company, this.bookings});
 
@@ -18,9 +20,9 @@ class ManagerBookingsModel {
         ? ManagerCompany.fromJson(json['company'])
         : null;
     if (json['bookings'] != null) {
-      bookings = <CompanyBooking>[];
+      bookings = <ApartmentBooking>[];
       json['bookings'].forEach((v) {
-        bookings!.add(CompanyBooking.fromJson(v));
+        bookings!.add(ApartmentBooking.fromJson(v));
       });
     }
   }
@@ -59,42 +61,40 @@ class ManagerCompany {
   }
 }
 
-class CompanyBooking {
-  BookingUser? user;
-  BookingCar? car;
+class ApartmentBooking extends RentXSerialized {
+  UserSignUpRequest? user;
+  Rent? rentType;
+  PaymentModel? paymentModel;
+  AppartmentModel? appartmentModel;
   BookingStatus? status;
   DateTime? fromDate;
   DateTime? toDate;
-  double? totalPrice, pricePerDay;
-  List<Fees>? fees;
-  String? id;
+  String? apUid, agentUid;
 
-  CompanyBooking(
-      {this.user,
-      this.status,
-      this.fromDate,
-      this.toDate,
-      this.totalPrice,
-      this.pricePerDay,
-      this.fees,
-      this.car,
-      this.id});
+  ApartmentBooking.instance();
 
-  CompanyBooking.fromJson(Map<String, dynamic> json) {
-    user = json['user'] != null ? BookingUser.fromJson(json['user']) : null;
+  ApartmentBooking({
+    this.user,
+    this.status,
+    this.fromDate,
+    this.toDate,
+    this.paymentModel,
+    this.apUid,
+    this.agentUid,
+    this.appartmentModel,
+  });
+
+  ApartmentBooking.fromJson(Map<String, dynamic> json) {
+    user =
+        json['user'] != null ? UserSignUpRequest.fromJson(json['user']) : null;
     status = EnumUtil.strToEnumNullable(BookingStatus.values, json['status']);
     fromDate = DateTime.tryParse(json['fromDate']);
     toDate = DateTime.tryParse(json['toDate']);
-    totalPrice = json['totalPrice'];
-    pricePerDay = json['pricePerDay'];
-    if (json['fees'] != null) {
-      fees = <Fees>[];
-      json['fees'].forEach((v) {
-        fees!.add(Fees.fromJson(v));
-      });
-    }
-    car = BookingCar.fromJson(json['car']);
-    id = json['id'];
+    paymentModel = PaymentModel.fromJson(json['paymentModel']);
+    apUid = json['apUid'];
+    agentUid = json['agentUid'];
+    rentType = EnumUtil.strToEnumNullable(Rent.values, json['rentType']);
+    appartmentModel = AppartmentModel.fromJson(json['appartmentModel']);
   }
 
   Map<String, dynamic> toJson() {
@@ -102,12 +102,46 @@ class CompanyBooking {
     if (user != null) {
       data['user'] = user!.toJson();
     }
-    data['status'] = status;
+    data['status'] = status!.name;
     data['fromDate'] = fromDate?.toIso8601String();
     data['toDate'] = toDate?.toIso8601String();
+    data['paymentModel'] = paymentModel!.toJson();
+    data['apUid'] = apUid;
+    data['agentUid'] = agentUid;
+    data['rentType'] = rentType!.name;
+    data['appartmentModel'] = appartmentModel!.toJson();
+    return data;
+  }
+}
+
+class PaymentModel {
+  List<Fees>? fees;
+  double? totalPrice, pricePerDay;
+
+  PaymentModel({
+    required this.fees,
+    required this.pricePerDay,
+    required this.totalPrice,
+  });
+
+  PaymentModel.fromJson(Map<String, dynamic> json) {
+     if (json['fees'] != null) {
+      fees = <Fees>[];
+      json['fees'].forEach((v) {
+        fees!.add(Fees.fromJson(v));
+      });
+    }
+    totalPrice = json['totalPrice'];
+    pricePerDay = json['pricePerDay'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (fees != null) {
+      data['fees'] = fees!.map((v) => v.toJson()).toList();
+    }
     data['totalPrice'] = totalPrice;
-    data['id'] = id;
-    data['car'] = car?.toJson();
+    data['pricePerDay'] = pricePerDay;
     return data;
   }
 }
@@ -124,6 +158,13 @@ class Fees {
   Fees.fromJson(Map<String, dynamic> json) {
     type = EnumUtil.strToEnumNullable(FeesType.values, json['type']);
     value = json['lastName'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['type'] = type!.name;
+    data['value'] = value;
+    return data;
   }
 }
 
@@ -228,7 +269,6 @@ class UserBooking extends RentXSerialized {
     return data;
   }
 }
-
 
 enum BookingStatus { pending, rejected, approved, cancelled, expired }
 

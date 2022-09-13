@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:the_hostel/infrastructure/utils.dart';
+import 'package:the_hostel/models/appartment_model.dart';
 import 'package:the_hostel/models/signup_model.dart';
 import 'package:the_hostel/services/auth_service.dart';
 import 'package:the_hostel/services/file_service.dart';
@@ -115,6 +116,11 @@ class AuthCubit extends Cubit<AuthStates> {
     emit(OnChangeState());
   }
 
+  onChangeGender(Gender value) {
+    signUpRequest.gender = value;
+    emit(OnChangeState());
+  }
+
   onChangePhoneNumber(String value) {
     phoneNumber = value;
     signUpRequest.phoneNumber = value;
@@ -198,17 +204,16 @@ class AuthCubit extends Cubit<AuthStates> {
 
   verifyPhoneNumber() {
     _authService.verfiyPhoneNumber(
-      phoneNumber: phoneNumber, onSent: (String vId, int? token) {
-        verficationIdChanged(vId);
-        emit(CodeSentState());
-      }
-      );
+        phoneNumber: phoneNumber,
+        onSent: (String vId, int? token) {
+          verficationIdChanged(vId);
+          emit(CodeSentState());
+        });
   }
 
   Future<void> confirmOtp() async {
     emit(OtpConfirmedLoadingState());
-    _authService.confirmOtp(vId: verficationId!, code: pin)
-        .then((value) {
+    _authService.confirmOtp(vId: verficationId!, code: pin).then((value) {
       emit(OtpConfirmedSuccessState());
     }).catchError((error) {
       emit(OtpConfirmedErrorState(error: error.message));
@@ -217,7 +222,7 @@ class AuthCubit extends Cubit<AuthStates> {
 
   onNextValidation(context) {
     if (index == 0) {
-      if (formKey1.currentState!.validate() && birthDate != null) {
+      if (formKey1.currentState!.validate() && birthDate != null && signUpRequest.gender != null) {
         onNextStep();
       }
     } else if (index == 1) {

@@ -10,12 +10,13 @@ import 'package:the_hostel/view_models/owner_cubit/cubit.dart';
 import 'package:the_hostel/view_models/owner_cubit/states.dart';
 import 'package:the_hostel/views/auth_views/user_login/login_view.dart';
 import 'package:the_hostel/views/components/base_widget.dart';
+import 'package:the_hostel/views/components/components/badge_widget.dart';
 import 'package:the_hostel/views/components/components/custom_button.dart';
 import 'package:the_hostel/views/components/components/custom_text.dart';
-import 'package:the_hostel/views/components/components/dot_badge.dart';
 import 'package:the_hostel/views/components/components/price_tag.dart';
 import 'package:the_hostel/views/components/components/rentx_circle_image.dart';
 import 'package:the_hostel/views/owner_views/booking_details_view.dart';
+import 'package:the_hostel/views/owner_views/scan_qr_view.dart';
 
 class BookingView extends StatelessWidget {
   const BookingView({Key? key}) : super(key: key);
@@ -30,7 +31,7 @@ class BookingView extends StatelessWidget {
               return Scaffold(
                 body: SafeArea(
                   child: ConditionalBuilder(
-                    condition: true,
+                    condition: state is! GetAllBookingsLoadingState,
                     fallback: (context) => const Center(
                       child: CircularProgressIndicator.adaptive(),
                     ),
@@ -42,7 +43,7 @@ class BookingView extends StatelessWidget {
                           CustomText(
                             color: rentxcontext.theme.customTheme.headline,
                             fontSize: width(24),
-                            text: "Booking List (3)",
+                            text: "Booking List (${cubit.bookings.length})",
                             fontWeight: FontWeight.w600,
                           ),
                           SizedBox(
@@ -51,12 +52,14 @@ class BookingView extends StatelessWidget {
                           ListView.separated(
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            itemCount: 3,
+                            itemCount: cubit.bookings.length,
                             separatorBuilder: (context, index) => SizedBox(
                               height: height(25),
                             ),
                             itemBuilder: (context, index) =>
-                                CustomBookingScreenCard(),
+                                CustomBookingScreenCard(
+                              booking: cubit.bookings[index],
+                            ),
                           )
                         ],
                       ),
@@ -71,7 +74,10 @@ class BookingView extends StatelessWidget {
 class CustomBookingScreenCard extends StatelessWidget {
   const CustomBookingScreenCard({
     Key? key,
+    required this.booking,
   }) : super(key: key);
+
+  final ApartmentBooking booking;
 
   @override
   Widget build(BuildContext context) {
@@ -100,10 +106,10 @@ class CustomBookingScreenCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         RentXCircleImage(
-                          imageSrc:
+                          imageSrc: booking.user!.profilePictureId ??
                               "https://th.bing.com/th/id/R.95e45a66c918a53280e796b44add2d66?rik=oVKQ59XBdewj8Q&pid=ImgRaw&r=0",
-                          avatarLetters:
-                              NameUtil.getInitials("Mohamed", "Mounir"),
+                          avatarLetters: NameUtil.getInitials(
+                              booking.user!.name, booking.user!.surname),
                         ),
                         SizedBox(
                           width: width(14),
@@ -112,11 +118,26 @@ class CustomBookingScreenCard extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              CustomText(
-                                color: rentxcontext.theme.customTheme.headline,
-                                fontSize: width(16),
-                                text: "Mohamed Mounir",
-                                fontWeight: FontWeight.w600,
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  CustomText(
+                                    color:
+                                        rentxcontext.theme.customTheme.headline,
+                                    fontSize: width(16),
+                                    text: booking.user!.getFullName(),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  CustomRectBadge(
+                                      text: booking.status!.name,
+                                      color: BookingStatusExtension(
+                                              booking.status!)
+                                          .getTextColor(rentxcontext),
+                                      bgColor: BookingStatusExtension(
+                                              booking.status!)
+                                          .getBadgeColor(rentxcontext))
+                                ],
                               ),
                               SizedBox(
                                 height: height(5),
@@ -125,7 +146,7 @@ class CustomBookingScreenCard extends StatelessWidget {
                                   color:
                                       rentxcontext.theme.customTheme.headline3,
                                   fontSize: width(14),
-                                  text: "Passion Homes appartment"),
+                                  text: booking.appartmentModel!.name!),
                               SizedBox(
                                 height: height(10),
                               ),
@@ -142,10 +163,7 @@ class CustomBookingScreenCard extends StatelessWidget {
                                         .theme.customTheme.headline2,
                                     fontSize: width(14),
                                     text: DateUtil.displayRange(
-                                      DateTime.tryParse(
-                                          "2022-07-09 22:02:30.905875")!,
-                                      DateTime.now(),
-                                    ),
+                                        booking.fromDate!, booking.toDate!),
                                   ),
                                 ],
                               ),
@@ -162,14 +180,23 @@ class CustomBookingScreenCard extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        const Expanded(
+                        Expanded(
                           child: PriceTag(
-                            price: "920",
-                            duration: "month",
+                            price: booking.appartmentModel!.price.toString(),
+                            duration: booking.appartmentModel!.duration!.name,
                             showDuration: true,
                           ),
                         ),
-                        Expanded(
+                        CustomButton(
+                          fontSize: width(14),
+                          btnHeight: height(40),
+                          enabled: booking.status == BookingStatus.pending,
+                          function: () {
+                            rentxcontext.route((context) => ScanQrCodeView(booking: booking,));
+                          },
+                          text: "Scan Qr Code",
+                        ),
+                        /*Expanded(
                           child: Row(
                             children: [
                               SvgPicture.asset("assets/images/location.svg"),
@@ -186,7 +213,7 @@ class CustomBookingScreenCard extends StatelessWidget {
                               ),
                             ],
                           ),
-                        )
+                        )*/
                       ],
                     )
                   ],
@@ -201,7 +228,7 @@ class CustomBookingScreenCard extends StatelessWidget {
 class RejectionDialog extends StatelessWidget {
   const RejectionDialog({Key? key, required this.bookings}) : super(key: key);
 
-  final CompanyBooking bookings;
+  final ApartmentBooking bookings;
 
   @override
   Widget build(BuildContext context) {
@@ -322,7 +349,7 @@ class RejectionDialog extends StatelessWidget {
 class ApproveDialog extends StatelessWidget {
   const ApproveDialog({Key? key, required this.bookings}) : super(key: key);
 
-  final CompanyBooking bookings;
+  final ApartmentBooking bookings;
 
   @override
   Widget build(BuildContext context) {

@@ -64,6 +64,7 @@ class CompletedScreen extends StatelessWidget {
               const Spacer(),
               CustomButton(
                 fontSize: width(16),
+                btnWidth: double.infinity,
                 isUpperCase: false,
                 function: onBtnClick,
                 text: rentXContext.translate(btnText!),

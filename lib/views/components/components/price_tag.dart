@@ -8,11 +8,11 @@ class PriceTag extends StatelessWidget {
       {Key? key,
       required this.price,
       this.duration,
-      required this.showDuration})
+      this.showDuration = false})
       : super(key: key);
 
   final String? price, duration;
-  final bool showDuration;
+  final bool? showDuration;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class PriceTag extends StatelessWidget {
             fontWeight: FontWeight.w600,
             color: color.primary,
           ),
-          if (showDuration)
+          if (showDuration!)
             CustomText(
               fontSize: width(12),
               text: "/$duration",

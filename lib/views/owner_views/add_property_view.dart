@@ -1,6 +1,7 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:the_hostel/infrastructure/utils.dart';
 import 'package:the_hostel/size_config.dart';
 import 'package:the_hostel/view_models/add_property_cubit/cubit.dart';
 import 'package:the_hostel/view_models/add_property_cubit/states.dart';
@@ -40,10 +41,15 @@ class RealEstatesView extends StatelessWidget {
                     return ListView.separated(
                       shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
-                      itemBuilder: (context, index) =>
-                           HorizontalPropertyWidget(
-                            appartmentModel: cubit.apartments[index],
-                           ),
+                      itemBuilder: (context, index) => HorizontalPropertyWidget(
+                        appartmentModel: cubit.apartments[index],
+                        rating: cubit.reviewsApartments.isNotEmpty
+                            ? StringUtil.ratingUtil(cubit.reviewsApartments[
+                                    cubit.apartments[index].apUid]!)
+                                .toString()
+                            : "NA",
+                        isBookMark: false,
+                      ),
                       separatorBuilder: (context, index) => SizedBox(
                         height: height(25),
                       ),
@@ -58,6 +64,7 @@ class RealEstatesView extends StatelessWidget {
                   height: height(25),
                 ),
                 CustomButton(
+                  btnWidth: double.infinity,
                   fontSize: width(18),
                   function: () {
                     rentxcontext.route(

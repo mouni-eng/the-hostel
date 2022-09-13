@@ -40,10 +40,7 @@ class StudentLayoutView extends StatelessWidget {
           return Scaffold(
             resizeToAvoidBottomInset: false,
             body: SafeArea(
-              child: Padding(
-                padding: padding,
-                child: cubit.screens[cubit.bottomNavIndex],
-              ),
+              child: cubit.screens[cubit.bottomNavIndex],
             ),
             bottomNavigationBar: SizedBox(
               width: double.infinity,

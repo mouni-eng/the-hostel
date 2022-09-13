@@ -108,6 +108,7 @@ class LogInView extends StatelessWidget {
                         height: height(24),
                       ),
                       CustomButton(
+                        btnWidth: double.infinity,
                         showLoader: state is LogInLoadingState,
                         fontSize: width(16),
                         isUpperCase: false,

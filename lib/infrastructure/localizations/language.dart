@@ -11,7 +11,7 @@ class Language {
 
   static List<Language> languages = [
     Language(const Locale('en'), "English"),
-    Language(const Locale('al'), "Shqip"),
+    Language(const Locale('ar'), "Arabic"),
   ];
 
   static Language currentLanguage = languages.first;

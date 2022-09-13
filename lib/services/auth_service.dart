@@ -6,6 +6,7 @@ import 'package:the_hostel/constants.dart';
 import 'package:the_hostel/infrastructure/utils.dart';
 import 'package:the_hostel/models/signup_model.dart';
 import 'package:the_hostel/services/local/cache_helper.dart';
+import 'package:the_hostel/views/starting_screens/onBoarding_screen.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -41,8 +42,9 @@ class AuthService {
     });
   }
 
-  Future<UserSignUpRequest> getUser({required uid}) async {
-    var response = await _firestore.collection("users").doc(uid).get();
+  Future<UserSignUpRequest> getUser({String? uid}) async {
+    var uId = await CacheHelper.getData(key: "uid");
+    var response = await _firestore.collection("users").doc(uid ?? uId).get();
     var model = UserSignUpRequest.fromJson(response.data()!);
     userModel = model;
     printLn(model.toJson().toString());
@@ -65,4 +67,6 @@ class AuthService {
     await _auth.signInWithCredential(
         PhoneAuthProvider.credential(verificationId: vId!, smsCode: code!));
   }
+
+  
 }

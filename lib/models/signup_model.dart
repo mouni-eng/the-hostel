@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:the_hostel/infrastructure/request.dart';
+import 'package:the_hostel/infrastructure/utils.dart';
 import 'package:the_hostel/models/address.dart';
+import 'package:the_hostel/models/appartment_model.dart';
 
 class UserSignUpRequest extends RentXSerialized {
   String? email;
@@ -9,12 +11,14 @@ class UserSignUpRequest extends RentXSerialized {
   String? surname;
   DateTime? birthdate;
   UserRole? role;
+  Gender? gender;
   Address? address;
   String? password;
   String? confirmPassword;
   String? personalId;
   String? phoneNumber;
   String? profilePictureId;
+  String? universty, government;
 
   UserSignUpRequest.instance();
 
@@ -30,6 +34,9 @@ class UserSignUpRequest extends RentXSerialized {
       this.confirmPassword,
       this.personalId,
       this.phoneNumber,
+      this.government,
+      this.gender,
+      this.universty,
       this.profilePictureId});
 
   UserSignUpRequest.fromJson(Map<String, dynamic> json) {
@@ -45,7 +52,10 @@ class UserSignUpRequest extends RentXSerialized {
     role = json['role'] == "student" ? UserRole.student : UserRole.owner;
     password = json['password'];
     personalId = json['personalId'];
+    gender = EnumUtil.strToEnum(Gender.values, json['gender']);
     profilePictureId = json['profilePictureId'];
+    government = json['government'];
+    universty = json['universty'];
   }
 
   @override
@@ -61,7 +71,10 @@ class UserSignUpRequest extends RentXSerialized {
         'confirmPassword': confirmPassword,
         'personalId': personalId,
         'phoneNumber': phoneNumber,
-        'profilePictureId': profilePictureId
+        'profilePictureId': profilePictureId,
+        'government': government,
+        'gender': gender!.name,
+        'universty': universty,
       };
 
   String getFullName() => '$name $surname';

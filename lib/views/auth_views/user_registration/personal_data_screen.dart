@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:the_hostel/infrastructure/utils.dart';
+import 'package:the_hostel/models/appartment_model.dart';
 import 'package:the_hostel/size_config.dart';
 import 'package:the_hostel/view_models/auth_cubit/cubit.dart';
 import 'package:the_hostel/view_models/auth_cubit/states.dart';
@@ -12,6 +13,7 @@ import 'package:the_hostel/views/components/base_widget.dart';
 import 'package:the_hostel/views/components/components/custom_button.dart';
 import 'package:the_hostel/views/components/components/custom_text.dart';
 import 'package:the_hostel/views/components/components/rentx_imagepicker.dart';
+import 'package:the_hostel/views/owner_views/property_listing/basic_info_view.dart';
 
 class PersonalDataScreen extends StatelessWidget {
   const PersonalDataScreen({Key? key}) : super(key: key);
@@ -86,6 +88,18 @@ class PersonalDataScreen extends StatelessWidget {
                       onChange: (value) {
                         cubit.onChangePhoneNumber(value);
                       }),
+                      PropertiesWidget(
+                        title: "Gender type",
+                        length: Gender.values.length,
+                        customBuilder: (context, index) => AddPropertyComponent(
+                          title: Gender.values[index].name,
+                          selected: cubit.signUpRequest.gender ==
+                              Gender.values[index],
+                          onSelected: () {
+                            cubit.onChangeGender(Gender.values[index]);
+                          },
+                        ),
+                      ),
                   CustomText(
                     color: rentxcontext.theme.customTheme.headline,
                     fontSize: width(14),

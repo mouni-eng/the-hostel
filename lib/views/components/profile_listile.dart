@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:the_hostel/constants.dart';
 import 'package:the_hostel/size_config.dart';
+import 'package:the_hostel/view_models/profile_cubit/cubit.dart';
 import 'package:the_hostel/views/components/base_widget.dart';
 import 'package:the_hostel/views/components/components/back_button.dart';
 import 'package:the_hostel/views/components/components/custom_text.dart';
@@ -59,9 +60,9 @@ class CustomProfileListTile extends StatelessWidget {
               )
             : isDark
                 ? Switch.adaptive(
-                    value: false,
+                    value: ProfileCubit.get(context).isDark,
                     onChanged: (value) {
-                      // ProfileCubit.get(context).switchTheme(context);
+                      ProfileCubit.get(context).switchTheme(context);
                     })
                 : CustomBorderWidget(
                     rentxcontext: rentxcontext,

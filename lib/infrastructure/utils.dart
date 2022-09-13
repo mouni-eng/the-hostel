@@ -3,10 +3,48 @@ import 'package:flutter/material.dart';
 import 'package:the_hostel/infrastructure/exceptions.dart';
 import 'package:the_hostel/infrastructure/localizations/language.dart';
 import 'package:the_hostel/infrastructure/localizations/translator.dart';
+import 'package:the_hostel/models/appartment_model.dart';
+import 'package:the_hostel/models/booking_model.dart';
+import 'package:the_hostel/models/review_model.dart';
 
 void printLn(Object? object) {
   if (kDebugMode) {
     print(object);
+  }
+}
+
+class StringUtil {
+  static voteUtil(String? no) {
+    if (no == "?") {
+      return 1;
+    } else {
+      var number = int.parse(no!);
+      return number + 1;
+    }
+  }
+
+  static increaseBookings(ApartmentBooking model) {
+    if (model.rentType == Rent.appartment) {
+      return model.appartmentModel!.capacity!;
+    } else if (model.rentType == Rent.room) {
+      int no = model.appartmentModel!.booked!;
+      return no += model.appartmentModel!.bedPerRoom!;
+    }else {
+      int no = model.appartmentModel!.booked!;
+      return no += 1;
+    }
+    
+  }
+
+  static ratingUtil(List<ReviewModel> ratings) {
+    double totalRating = 0.0;
+    if (ratings.isNotEmpty) {
+      for (var rating in ratings) {
+        totalRating += rating.rating!;
+      }
+    }
+
+    return ratings.isNotEmpty ? totalRating / ratings.length : 0;
   }
 }
 
@@ -17,7 +55,34 @@ class DateUtil {
   }
 
   static displayDiffrence(final DateTime from, final DateTime to) {
-    return " x ${from.day - to.day} Days";
+    return "${to.difference(from).inDays.toString()} Days";
+  }
+
+  static totalPrice({
+    required DateTime from,
+    required DateTime to,
+    required HostelDuration duration,
+    required Rent type,
+    required double price,
+  }) {
+    var daysNumber = to.difference(from).inDays;
+    if (duration.name == "month") {
+      return pricePerType(type, daysNumber * price / 30);
+    } else {
+      return pricePerType(type, price);
+    }
+  }
+
+  static pricePerType(Rent rent, double price) {
+    switch (rent) {
+      case Rent.appartment:
+        return price;
+      case Rent.room:
+        return price * 0.15;
+      case Rent.bed:
+        return price * 0.05;
+      default:
+    }
   }
 
   static displayRange(final DateTime from, final DateTime to) {
@@ -96,7 +161,12 @@ class DateUtil {
 
 class EnumUtil {
   static T strToEnum<T extends Enum>(List<T> values, String str) {
-    return values.firstWhere((element) => str.toLowerCase() == element.name, orElse: () => values.firstWhere((element) => str == element.name,), );
+    return values.firstWhere(
+      (element) => str.toLowerCase() == element.name,
+      orElse: () => values.firstWhere(
+        (element) => str == element.name,
+      ),
+    );
   }
 
   static T? strToEnumNullable<T extends Enum>(List<T> values, String? str) {

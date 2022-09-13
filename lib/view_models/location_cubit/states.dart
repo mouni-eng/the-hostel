@@ -12,3 +12,9 @@ class LocationErrorState extends LocationStates {
 }
 
 class OnChangeState extends LocationStates {}
+
+class GetAllApartmentsLoadingState extends LocationStates {}
+
+class GetAllApartmentsSuccessState extends LocationStates {}
+
+class GetAllApartmentsErrorState extends LocationStates {}

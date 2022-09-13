@@ -6,8 +6,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:the_hostel/constants.dart';
 import 'package:the_hostel/models/address.dart';
 import 'package:the_hostel/models/appartment_model.dart';
+import 'package:the_hostel/models/review_model.dart';
 import 'package:the_hostel/services/apartment_service.dart';
 import 'package:the_hostel/services/file_service.dart';
+import 'package:the_hostel/services/home_service.dart';
 import 'package:the_hostel/view_models/add_property_cubit/states.dart';
 import 'package:the_hostel/views/auth_views/user_registration/address_selection.dart';
 import 'package:the_hostel/views/owner_views/property_listing/additional_info_view.dart';
@@ -22,9 +24,12 @@ class AddPropertyCubit extends Cubit<AddPropertyStates> {
   int index = 0;
   bool isLast = false;
   double percent = 1 / 4;
-  final GlobalKey basicFormkey = GlobalKey<FormState>();
+  final basicFormkey = GlobalKey<FormState>();
+  final apartmentFormkey = GlobalKey<FormState>();
+  final additionalFormkey = GlobalKey<FormState>();
   final ApartmentService _apartmentService = ApartmentService();
   final FileService _fileService = FileService();
+  final HomeService _homeService = HomeService();
 
   PageController controller = PageController();
 
@@ -32,23 +37,31 @@ class AddPropertyCubit extends Cubit<AddPropertyStates> {
 
   List<File> images = [];
   List<AppartmentModel> apartments = [];
+  Map<String, List<ReviewModel>> reviewsApartments = {};
 
   getApartments() {
     emit(GetApartmentLoadingState());
-    _apartmentService.getApartment().then((value) {
+    _apartmentService.getApartment().listen((value) {
+      apartments.clear();
+      reviewsApartments.clear();
       print(value.docs.length);
       if (value.docs.isEmpty) {
         emit(GetApartmentSuccessState());
       }
       for (var apartment in value.docs) {
         print(apartment.data());
+        _homeService
+            .getReviews(
+                apartmentModel: AppartmentModel.fromJson(apartment.data()))
+            .then((value) {
+          print(value.length);
+          reviewsApartments.addAll(
+              {AppartmentModel.fromJson(apartment.data()).apUid!: value});
+        });
         apartments.add(AppartmentModel.fromJson(apartment.data()));
         print(apartments[0].studyingPlaceFeatures![0].value);
         emit(GetApartmentSuccessState());
       }
-    }).catchError((error) {
-      print(error.toString());
-      emit(GetApartmentErrorState());
     });
   }
 
@@ -90,8 +103,8 @@ class AddPropertyCubit extends Cubit<AddPropertyStates> {
     emit(OnChangePropertyState());
   }
 
-  onChooseRent(Rent value) {
-    appartmentModel.rent = value;
+  onChooseGender(Gender value) {
+    appartmentModel.gender = value;
     emit(OnChangePropertyState());
   }
 
@@ -123,7 +136,7 @@ class AddPropertyCubit extends Cubit<AddPropertyStates> {
   }
 
   onChooserooms(int value) {
-    appartmentModel.rooms = value;
+    appartmentModel.bedrooms = value;
     emit(OnChangePropertyState());
   }
 
@@ -134,6 +147,16 @@ class AddPropertyCubit extends Cubit<AddPropertyStates> {
 
   onChoosecapacity(int value) {
     appartmentModel.capacity = value;
+    emit(OnChangePropertyState());
+  }
+
+  onChooseArea(int value) {
+    appartmentModel.area = value;
+    emit(OnChangePropertyState());
+  }
+
+  onChooseBedPerRoom(int value) {
+    appartmentModel.bedPerRoom = value;
     emit(OnChangePropertyState());
   }
 
@@ -166,6 +189,25 @@ class AddPropertyCubit extends Cubit<AddPropertyStates> {
           milliseconds: 750,
         ),
         curve: Curves.fastLinearToSlowEaseIn);
+  }
+
+  onNextValidate() {
+    if (index == 0) {
+      if (basicFormkey.currentState!.validate() &&
+          appartmentModel.duration != null) {
+        onNextStep();
+      }
+    } else if (index == 1) {
+      if (apartmentFormkey.currentState!.validate() &&
+          appartmentModel.elevation != null &&
+          appartmentModel.gender != null) {
+        onNextStep();
+      }
+    } else if (index == 2) {
+      if (additionalFormkey.currentState!.validate()) {
+        onNextStep();
+      }
+    }
   }
 
   Future<void> uploadImages() async {

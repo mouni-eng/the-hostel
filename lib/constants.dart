@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:the_hostel/models/signup_model.dart';
 import 'package:the_hostel/size_config.dart';
@@ -22,3 +21,10 @@ const Widget loading = Center(
 );
 
 UserSignUpRequest? userModel;
+
+const userRef = "users";
+const apartRef = "apartments";
+const favRef = "wishList";
+const rateRef = "reviews";
+const bookingRef = "bookings";
+const transRef = "transportation";

@@ -28,60 +28,63 @@ class BasicInfo extends StatelessWidget {
               ),
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    PropertiesWidget(
-                      title: "Name",
-                      onChange: (String value) {
-                        cubit.onChoosename(value);
-                      },
-                    ),
-                    PropertiesWidget(
-                      title: "Price",
-                      isPhoneNumber: true,
-                      onChange: (String value) {
-                        cubit.onChoosePrice(double.parse(value));
-                      },
-                    ),
-                    PropertiesWidget(
-                      title: "Duration",
-                      length: HostelDuration.values.length,
-                      customBuilder: (context, index) => AddPropertyComponent(
-                        title: HostelDuration.values[index].name,
-                        iconData: Icons.timer_outlined,
-                        selected: cubit.appartmentModel.duration ==
-                            HostelDuration.values[index],
-                        onSelected: () {
-                          cubit.onChooseDuration(HostelDuration.values[index]);
+                child: Form(
+                  key: cubit.basicFormkey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      PropertiesWidget(
+                        title: "Name",
+                        onChange: (String value) {
+                          cubit.onChoosename(value);
                         },
                       ),
-                    ),
-                    PropertiesWidget(
-                      title: "Description",
-                      isAboutMe: true,
-                      onChange: (String value) {
-                        cubit.onChoosedescription(value);
-                      },
-                    ),
-                    SizedBox(
-                      height: height(35),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: CustomButton(
-                        text: rentxcontext.translate('Next'),
-                        radius: 6,
-                        fontSize: width(16),
-                        btnWidth: width(132),
-                        btnHeight: height(50),
-                        function: () {
-                          cubit.onNextStep();
+                      PropertiesWidget(
+                        title: "Price",
+                        isPhoneNumber: true,
+                        onChange: (String value) {
+                          cubit.onChoosePrice(double.parse(value));
                         },
-                        isUpperCase: false,
                       ),
-                    ),
-                  ],
+                      PropertiesWidget(
+                        title: "Duration",
+                        length: HostelDuration.values.length,
+                        customBuilder: (context, index) => AddPropertyComponent(
+                          title: HostelDuration.values[index].name,
+                          iconData: Icons.timer_outlined,
+                          selected: cubit.appartmentModel.duration ==
+                              HostelDuration.values[index],
+                          onSelected: () {
+                            cubit.onChooseDuration(HostelDuration.values[index]);
+                          },
+                        ),
+                      ),
+                      PropertiesWidget(
+                        title: "Description",
+                        isAboutMe: true,
+                        onChange: (String value) {
+                          cubit.onChoosedescription(value);
+                        },
+                      ),
+                      SizedBox(
+                        height: height(35),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: CustomButton(
+                          text: rentxcontext.translate('Next'),
+                          radius: 6,
+                          fontSize: width(16),
+                          btnWidth: width(132),
+                          btnHeight: height(50),
+                          function: () {
+                            cubit.onNextValidate();
+                          },
+                          isUpperCase: false,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );

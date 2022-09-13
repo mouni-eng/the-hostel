@@ -149,7 +149,7 @@ class CustomTheme {
       textColor: const Color(0xffffffff),
       shimmerHighlightColor: const Color(0xFF454545),
       primary: const Color(0xff226e79),
-      onPrimary: const Color(0xffffffff),
+      onPrimary: Colors.black,
       secondary: const Color(0xff226e79),
       onSecondary: const Color(0xffffffff),
       kSecondaryColor: Colors.white,

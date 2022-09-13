@@ -7,7 +7,8 @@ import 'package:the_hostel/models/address.dart';
 class AppartmentModel extends RentXSerialized {
   String? name, description, apUid, agentUid, rating;
   Address? address;
-  int? floor, rooms, bathroom, capacity;
+  int? floor, bathroom, capacity, booked, bedrooms, bedPerRoom, area;
+  Gender? gender;
   double? price;
   HostelDuration? duration;
   Elevation? elevation;
@@ -28,7 +29,6 @@ class AppartmentModel extends RentXSerialized {
     required this.description,
     required this.address,
     required this.floor,
-    required this.rooms,
     required this.bathroom,
     required this.capacity,
     required this.price,
@@ -46,6 +46,11 @@ class AppartmentModel extends RentXSerialized {
     required this.apUid,
     required this.agentUid,
     required this.rating,
+    required this.bedPerRoom,
+    required this.bedrooms,
+    required this.gender,
+    required this.area,
+    required this.booked,
   });
 
   AppartmentModel.fromJson(Map<String, dynamic> json) {
@@ -57,9 +62,14 @@ class AppartmentModel extends RentXSerialized {
     address =
         json['address'] != null ? Address.fromJson(json['address']) : null;
     floor = json['floor'];
-    rooms = json['rooms'];
+    bathroom = json['bathroom'];
+    bedPerRoom = json['bedPerRoom'];
+    bedrooms = json['bedrooms'];
     bathroom = json['bathroom'];
     capacity = json['capacity'];
+    booked = json['booked'] ?? 0;
+    gender = EnumUtil.strToEnum(Gender.values, json['gender']);
+    area = json['area'];
     price = json['price'];
     duration = EnumUtil.strToEnum(HostelDuration.values, json['duration']);
     elevation = EnumUtil.strToEnum(Elevation.values, json['elevation']);
@@ -67,17 +77,17 @@ class AppartmentModel extends RentXSerialized {
     images = convertList(json['images'] as List, (p0) => p0);
     bedFeatures = convertList(
         json['bedFeatures'] as List, (p0) => BedFeaturesClass.fromJson(p0));
+    bathroomFeatures = convertList(json['bathroomFeatures'] as List,
+        (p0) => BathroomFeaturesClass.fromJson(p0));
     heatingAndCooling = convertList(json['heatingAndCooling'] as List,
         (p0) => HeatingAndCoolingClass.fromJson(p0));
     kitchenFeatures = convertList(json['kitchenFeatures'] as List,
         (p0) => KitchenFeaturesClass.fromJson(p0));
     connectionFeatures = convertList(json['connectionFeatures'] as List,
         (p0) => ConnectionFeaturesClass.fromJson(p0));
-    entertainmentFeatures = convertList(
-        json['entertainmentFeatures'] as List,
+    entertainmentFeatures = convertList(json['entertainmentFeatures'] as List,
         (p0) => EntertainmentFeaturesClass.fromJson(p0));
-    studyingPlaceFeatures = convertList(
-        json['studyingPlaceFeatures'] as List,
+    studyingPlaceFeatures = convertList(json['studyingPlaceFeatures'] as List,
         (p0) => StudyingPlaceFeaturesClass.fromJson(p0));
   }
 
@@ -91,9 +101,13 @@ class AppartmentModel extends RentXSerialized {
       'rating': rating ?? "NA",
       'address': address == null ? null : address!.toJson(),
       'floor': floor,
-      'rooms': rooms,
       'bathroom': bathroom,
+      'bedrooms': bedrooms,
+      'bedPerRoom': bedPerRoom,
+      'area': area,
+      'gender': gender!.name,
       'capacity': capacity,
+      'booked': booked ?? 0,
       'price': price,
       'duration': duration!.name,
       'elevation': elevation!.name,
@@ -283,11 +297,13 @@ class EntertainmentFeaturesClass {
   }
 }
 
-enum HostelDuration { day, month, week }
+enum HostelDuration { day, month }
 
 enum Elevation { front, back }
 
 enum Rent { appartment, room, bed }
+
+enum Gender { male, female }
 
 enum BedFeatures {
   pellowsblankets,

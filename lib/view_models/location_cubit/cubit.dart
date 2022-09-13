@@ -2,7 +2,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:the_hostel/extensions/list_extension.dart';
 import 'package:the_hostel/infrastructure/utils.dart';
 import 'package:the_hostel/models/address.dart';
+import 'package:the_hostel/models/appartment_model.dart';
 import 'package:the_hostel/models/location.dart';
+import 'package:the_hostel/services/home_service.dart';
 import 'package:the_hostel/services/location_service.dart';
 import 'package:the_hostel/services/map/map_service.dart';
 import 'package:the_hostel/view_models/location_cubit/states.dart';
@@ -14,6 +16,9 @@ class LocationCubit extends Cubit<LocationStates> {
   static LocationCubit get(context) => BlocProvider.of(context);
 
   final LocationService _locationService = LocationService();
+  final HomeService _homeService = HomeService();
+  List<AppartmentModel> allApartments = [];
+  AppartmentModel? currentApartment;
   Address? address;
   String? notes;
   RentXLocation location = RentXLocation(
@@ -29,6 +34,24 @@ class LocationCubit extends Cubit<LocationStates> {
 
   notesChange(String? value) {
     notes = value;
+    emit(OnChangeState());
+  }
+
+  getAllApartments() {
+    emit(GetAllApartmentsLoadingState());
+    _homeService.getAllApartments().then((value) {
+      if (value.docs.isEmpty) {
+        emit(GetAllApartmentsSuccessState());
+      }
+      for (var apartment in value.docs) {
+        allApartments.add(AppartmentModel.fromJson(apartment.data()));
+        emit(GetAllApartmentsErrorState());
+      }
+    });
+  }
+
+  chooseApartment(AppartmentModel model) {
+    currentApartment = model;
     emit(OnChangeState());
   }
 

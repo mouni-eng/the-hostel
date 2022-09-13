@@ -17,7 +17,7 @@ class StudentCubit extends Cubit<StudentStates> {
 
   List<Widget> screens = [
     HomeView(),
-    MapSearchView(),
+    MapSearchScreen(),
     WishListView(),
     ProfileView(),
   ];

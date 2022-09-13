@@ -12,10 +12,12 @@ class ApartmentService {
         .set(model.toJson());
   }
 
-  Future<QuerySnapshot<Map<String, dynamic>>> getApartment() async {
-    return await _firestore
+  Stream<QuerySnapshot<Map<String, dynamic>>> getApartment() {
+    return _firestore
         .collection("apartments")
         .where("agentUid", isEqualTo: userModel!.personalId)
-        .get();
+        .snapshots();
   }
+
+  
 }

@@ -20,7 +20,7 @@ class CustomButton extends StatelessWidget {
 
   const CustomButton({
     Key? key,
-    this.btnWidth = double.infinity,
+    this.btnWidth,
     this.background,
     this.radius = 6.0,
     required this.fontSize,
@@ -84,14 +84,11 @@ class CustomButton extends StatelessWidget {
   }
 
   Widget _textWidget(RentXContext rentXContext) {
-    return Expanded(
-        child: Center(
-      child: CustomText(
-        text: isUpperCase! ? text!.toUpperCase() : text!,
-        color: rentXContext.theme.customTheme.onPrimary,
-        fontWeight: FontWeight.w600,
-        fontSize: fontSize!,
-      ),
-    ));
+    return CustomText(
+      text: isUpperCase! ? text!.toUpperCase() : text!,
+      color: rentXContext.theme.customTheme.onPrimary,
+      fontWeight: FontWeight.w600,
+      fontSize: fontSize!,
+    );
   }
 }

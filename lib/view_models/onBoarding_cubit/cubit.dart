@@ -1,12 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:the_hostel/constants.dart';
 import 'package:the_hostel/models/onBoarding_model.dart';
+import 'package:the_hostel/models/signup_model.dart';
+import 'package:the_hostel/services/auth_service.dart';
+import 'package:the_hostel/services/local/cache_helper.dart';
 import 'package:the_hostel/view_models/onBoarding_cubit/states.dart';
+import 'package:the_hostel/views/owner_views/owner_layout_view.dart';
+import 'package:the_hostel/views/starting_screens/onBoarding_screen.dart';
+import 'package:the_hostel/views/student_views/layout_view.dart';
 
 class OnBoardingCubit extends Cubit<OnBoardingStates> {
   OnBoardingCubit() : super(OnBoardingStates());
 
   static OnBoardingCubit get(context) => BlocProvider.of(context);
+  final AuthService _authService = AuthService();
+
+  getUser() async {
+    emit(GetUserLoadingState());
+    var uid = await CacheHelper.getData(key: "uid");
+    if (uid != null) {
+      await _authService.getUser();
+      emit(GetUserSuccessState());
+    } else {
+      emit(GetUserErrorState());
+    }
+  }
+
+  Widget getInitialPage() {
+    if (userModel == null) {
+      return OnBoardingScreen();
+    } else if (userModel!.role == UserRole.student) {
+      return StudentLayoutView();
+    } else {
+      return OwnerLayoutView();
+    }
+  }
 
   PageController controller = PageController();
 

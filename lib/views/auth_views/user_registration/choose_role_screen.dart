@@ -55,6 +55,7 @@ class ChooseRoleScreen extends StatelessWidget {
                           const Spacer(),
                           CustomButton(
                             fontSize: width(16),
+                            btnWidth: double.infinity,
                             isUpperCase: false,
                             function: () {
                               cubit.signUpRequest.role = cubit.category;
