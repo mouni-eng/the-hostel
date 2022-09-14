@@ -12,6 +12,7 @@ import 'package:the_hostel/constants.dart';
 import 'package:the_hostel/infrastructure/utils.dart';
 import 'package:the_hostel/models/appartment_model.dart';
 import 'package:the_hostel/models/location.dart';
+import 'package:the_hostel/models/review_model.dart';
 import 'package:the_hostel/size_config.dart';
 import 'package:the_hostel/view_models/home_cubit/cubit.dart';
 import 'package:the_hostel/view_models/home_cubit/state.dart';
@@ -24,6 +25,7 @@ import 'package:the_hostel/views/components/components/custom_calander.dart';
 import 'package:the_hostel/views/components/components/custom_text.dart';
 import 'package:the_hostel/views/components/components/price_tag.dart';
 import 'package:the_hostel/views/components/components/rentalPropertyWidget.dart';
+import 'package:the_hostel/views/components/components/rentx_circle_image.dart';
 import 'package:the_hostel/views/components/widgets/map/rentx_map_card.dart';
 import 'package:the_hostel/views/owner_views/property_listing/basic_info_view.dart';
 import 'package:the_hostel/views/student_views/hostel_confirmation_view.dart';
@@ -390,11 +392,41 @@ class HostelDetailsView extends StatelessWidget {
                                       SizedBox(
                                         height: height(15),
                                       ),
-                                      Center(
-                                        child: CustomText(
-                                          color: color.headline3,
-                                          fontSize: width(16),
-                                          text: "Not Rated Yet",
+                                      ConditionalBuilder(
+                                        condition: HomeCubit.get(context)
+                                                        .reviewsApartments[
+                                                    appartmentModel.apUid] !=
+                                                null &&
+                                            HomeCubit.get(context)
+                                                .reviewsApartments[
+                                                    appartmentModel.apUid]!
+                                                .isNotEmpty,
+                                        builder: (context) => SizedBox(
+                                          height: height(120),
+                                          child: ListView.separated(
+                                              shrinkWrap: true,
+                                              itemBuilder: (context, index) =>
+                                                  ReviewCard(
+                                                      reviewModel: HomeCubit
+                                                                  .get(context)
+                                                              .reviewsApartments[
+                                                          appartmentModel
+                                                              .apUid]![index]),
+                                              separatorBuilder:
+                                                  (context, index) => SizedBox(
+                                                        width: width(10),
+                                                      ),
+                                              itemCount: HomeCubit.get(context)
+                                                  .reviewsApartments[
+                                                      appartmentModel.apUid]!
+                                                  .length),
+                                        ),
+                                        fallback: (context) => Center(
+                                          child: CustomText(
+                                            color: color.headline3,
+                                            fontSize: width(16),
+                                            text: "Not Rated Yet",
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -954,5 +986,41 @@ class CarListingMap extends StatelessWidget {
                 ],
               ),
             ));
+  }
+}
+
+class ReviewCard extends StatelessWidget {
+  const ReviewCard({Key? key, required this.reviewModel}) : super(key: key);
+
+  final ReviewModel reviewModel;
+
+  @override
+  Widget build(BuildContext context) {
+    return RentXWidget(builder: (rentxcontext) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          RentXCircleImage(
+            imageSrc: reviewModel.user!.profilePictureId,
+            avatarLetters: NameUtil.getInitials(
+                reviewModel.user!.name, reviewModel.user!.surname),
+          ),
+          SizedBox(
+            height: height(15),
+          ),
+          Row(
+            children: [
+              CustomText(
+                color: rentxcontext.theme.customTheme.headline,
+                fontSize: width(14),
+                text: "Rating:",
+                fontWeight: FontWeight.w400,
+              ),
+              RatingTag(rating: reviewModel.rating.toString()),
+            ],
+          ),
+        ],
+      );
+    });
   }
 }

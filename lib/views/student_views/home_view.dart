@@ -25,6 +25,7 @@ import 'package:the_hostel/views/components/components/custom_form_field.dart';
 import 'package:the_hostel/views/components/components/custom_text.dart';
 import 'package:the_hostel/views/components/components/rentalPropertyWidget.dart';
 import 'package:the_hostel/views/student_views/all_hostels_view.dart';
+import 'package:the_hostel/views/student_views/notification_view.dart';
 import 'package:the_hostel/views/student_views/qr_code_view.dart';
 
 class HomeView extends StatelessWidget {
@@ -600,7 +601,9 @@ class HomeNotificationBar extends StatelessWidget {
       var color = rentxcontext.theme.customTheme;
       return GestureDetector(
         onTap: () {
-          rentxcontext.route((context) => QrCodeGeneratorView(qrCode: booking.apUid!,));
+          rentxcontext.route((context) => QrCodeGeneratorView(
+                qrCode: booking.apUid!,
+              ));
         },
         child: Container(
           width: double.infinity,
@@ -823,9 +826,14 @@ class HomeHeaderWidget extends StatelessWidget {
       var color = rentxcontext.theme.customTheme;
       return Row(
         children: [
-          SvgPicture.asset(
-            "assets/images/remind.svg",
-            color: color.primary,
+          GestureDetector(
+            onTap: () {
+              rentxcontext.route((context) => const NotificationView());
+            },
+            child: SvgPicture.asset(
+              "assets/images/remind.svg",
+              color: color.primary,
+            ),
           ),
           SizedBox(
             width: width(20),
@@ -856,7 +864,7 @@ class HomeHeaderWidget extends StatelessWidget {
             imgWidth: 60,
             imgHeight: 65,
             radius: 12,
-            url: userModel!.profilePictureId!,
+            url: userModel!.profilePictureId ?? "",
             avatarLetters: NameUtil.getInitials(
               userModel!.name,
               userModel!.surname,

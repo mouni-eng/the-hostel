@@ -87,7 +87,7 @@ class CustomBookingScreenCard extends StatelessWidget {
           builder: (context, state) {
             return GestureDetector(
               onTap: () {
-                rentxcontext.route((context) => BookingDetailsScreen());
+                //rentxcontext.route((context) => BookingDetailsScreen());
               },
               child: Container(
                 width: double.infinity,
@@ -192,7 +192,9 @@ class CustomBookingScreenCard extends StatelessWidget {
                           btnHeight: height(40),
                           enabled: booking.status == BookingStatus.pending,
                           function: () {
-                            rentxcontext.route((context) => ScanQrCodeView(booking: booking,));
+                            rentxcontext.route((context) => ScanQrCodeView(
+                                  booking: booking,
+                                ));
                           },
                           text: "Scan Qr Code",
                         ),

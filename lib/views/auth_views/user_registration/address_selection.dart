@@ -362,10 +362,11 @@ class AddressApartmentSelection extends StatelessWidget {
                                 radius: 6,
                                 fontSize: width(16),
                                 btnWidth: double.infinity,
-                                function: () {
+                                function: () async {
                                   if (cubit.address != null) {
-                                    AddPropertyCubit.get(context)
+                                    await AddPropertyCubit.get(context)
                                         .onChooseAddress(cubit.address!);
+                                    rentxcontext.pop();
                                   }
                                 },
                                 isUpperCase: false,

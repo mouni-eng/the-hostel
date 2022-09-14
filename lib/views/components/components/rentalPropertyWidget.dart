@@ -319,7 +319,7 @@ class RatingTag extends StatelessWidget {
           Icon(
             Icons.star_rate_rounded,
             color: color.onPending,
-            size: height(25),
+            size: height(20),
           ),
           CustomText(
             fontSize: width(12),
@@ -388,7 +388,7 @@ class CustomNetworkImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return url != null && url.isNotEmpty
+    return  url.isNotEmpty
         ? Container(
             height: height(imgHeight),
             width: width(imgWidth),
@@ -414,7 +414,7 @@ class CustomNetworkImage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(radius),
                 child: Center(
                   child: CustomText(
-                      text: avatarLetters!,
+                      text: avatarLetters ?? "NA",
                       fontSize: width(20),
                       fontWeight: FontWeight.bold,
                       color: rentxcontext.theme.theme.colorScheme.onPrimary),

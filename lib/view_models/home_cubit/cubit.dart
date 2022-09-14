@@ -1,9 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:the_hostel/constants.dart';
 import 'package:the_hostel/models/appartment_model.dart';
 import 'package:the_hostel/models/booking_model.dart';
 import 'package:the_hostel/models/review_model.dart';
 import 'package:the_hostel/models/transportation_model.dart';
+import 'package:the_hostel/services/apartment_service.dart';
 import 'package:the_hostel/services/auth_service.dart';
 import 'package:the_hostel/services/booking_service.dart';
 import 'package:the_hostel/services/favourite_service.dart';
@@ -21,6 +23,7 @@ class HomeCubit extends Cubit<HomeStates> {
   final BookingService _bookingService = BookingService();
   final FavouriteService _favouriteService = FavouriteService();
   final TransportationService _transportationService = TransportationService();
+  final ApartmentService _apartmentService = ApartmentService();
 
   List<AppartmentModel> recommendApartments = [];
   List<AppartmentModel> allApartments = [];
@@ -29,6 +32,7 @@ class HomeCubit extends Cubit<HomeStates> {
   Map<String, List<ReviewModel>> reviewsApartments = {};
   TransportationModel dailyModel = TransportationModel.instance();
   TransportationModel weeklyModel = TransportationModel.instance();
+  ReviewModel reviewModel = ReviewModel.instance();
   ApartmentBooking? booking;
   String? governoment, universty;
 
@@ -108,12 +112,35 @@ class HomeCubit extends Cubit<HomeStates> {
   }
 
   getBooking() {
-    _bookingService.getBooking().then((value) {
+    _bookingService.getBooking().listen((value) {
+      booking = null;
       if (value.data() != null) {
         booking = ApartmentBooking.fromJson(value.data()!);
-        emit(OnChangeHomeState());
+        emit(OnChangeBookingState());
       }
-    }).catchError((error) {});
+    });
+  }
+
+  onChangeRating(double rating) {
+    reviewModel.rating = rating;
+    emit(OnChangeRatingState());
+  }
+
+  onChangeReview(String review) {
+    reviewModel.review = review;
+    emit(OnChangeRatingState());
+  }
+
+  addRating() {
+    emit(AddRatingLoadingState());
+    reviewModel.user = userModel!;
+    reviewModel.apUid = booking!.apUid;
+    _apartmentService.addRating(reviewModel).then((value) {
+      emit(AddRatingSuccessState());
+    }).catchError((error) {
+      print(error.toString());
+      emit(AddRatingErrorState());
+    });
   }
 
   getRecommendApartments() {

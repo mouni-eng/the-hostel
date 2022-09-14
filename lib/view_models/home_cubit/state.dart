@@ -2,6 +2,16 @@ class HomeStates {}
 
 class OnChangeHomeState extends HomeStates {}
 
+class OnChangeRatingState extends HomeStates {}
+
+class OnChangeBookingState extends HomeStates {}
+
+class AddRatingLoadingState extends HomeStates {}
+
+class AddRatingSuccessState extends HomeStates {}
+
+class AddRatingErrorState extends HomeStates {}
+
 class GetAllApartmentsLoadingState extends HomeStates {}
 
 class GetAllApartmentsSuccessState extends HomeStates {}

@@ -15,6 +15,7 @@ class ProfileCubit extends Cubit<ProfileStates> {
   static ProfileCubit get(context) => BlocProvider.of(context);
 
   bool isDark = false;
+  bool isNotify = false;
   Language activeLanguage = Language.currentLanguage;
 
   init() async {
@@ -29,6 +30,11 @@ class ProfileCubit extends Cubit<ProfileStates> {
   updateTheme(ThemeType themeType) {
     _changeTheme(themeType);
     updateInStorage(themeType);
+  }
+
+  onChangeNotify() {
+    isNotify = !isNotify;
+    emit(SwitchThemeState());
   }
 
   Future<void> updateInStorage(ThemeType themeType) async {

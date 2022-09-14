@@ -168,21 +168,16 @@ class ProfileView extends StatelessWidget {
                         child: Column(
                           children: [
                             CustomProfileListTile(
-                              title: "Wallet",
-                              img: "assets/images/bank-transfer.svg",
-                              onPressed: () {},
+                              title: "Gender",
+                              img: "assets/images/people-nav.svg",
+                              isCustom: true,
+                              subTitle: userModel!.gender!.name,
                             ),
                             const Divider(),
                             CustomProfileListTile(
                               title: "Notification",
                               img: "assets/images/remind.svg",
-                              onPressed: () {},
-                            ),
-                            const Divider(),
-                            CustomProfileListTile(
-                              title: "Dark Mode",
-                              isDark: true,
-                              img: "assets/images/moon.svg",
+                              isNotify: true,
                             ),
                             const Divider(),
                             CustomProfileListTile(

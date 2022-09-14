@@ -19,11 +19,11 @@ class BookingService {
     });
   }
 
-  Future<DocumentSnapshot<Map<String, dynamic>>> getBooking() async {
-    return await _firestore
+  Stream<DocumentSnapshot<Map<String, dynamic>>> getBooking() {
+    return _firestore
         .collection(bookingRef)
         .doc(userModel!.personalId)
-        .get();
+        .snapshots();
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getAllBookings() {

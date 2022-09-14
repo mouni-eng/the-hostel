@@ -102,7 +102,7 @@ class ApartmentInfoView extends StatelessWidget {
                               title: "Bed/Room",
                               isPhoneNumber: true,
                               onChange: (String value) {
-                                cubit.onChoosecapacity(int.parse(value));
+                                cubit.onChooseBedPerRoom(int.parse(value));
                               },
                             ),
                           ),
@@ -114,7 +114,7 @@ class ApartmentInfoView extends StatelessWidget {
                               title: "Area",
                               isPhoneNumber: true,
                               onChange: (String value) {
-                                cubit.onChoosecapacity(int.parse(value));
+                                cubit.onChooseArea(int.parse(value));
                               },
                             ),
                           ),

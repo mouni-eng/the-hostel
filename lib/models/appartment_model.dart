@@ -12,7 +12,6 @@ class AppartmentModel extends RentXSerialized {
   double? price;
   HostelDuration? duration;
   Elevation? elevation;
-  Rent? rent;
   List<String> images = [];
   List<BedFeaturesClass>? bedFeatures;
   List<HeatingAndCoolingClass>? heatingAndCooling;
@@ -34,7 +33,6 @@ class AppartmentModel extends RentXSerialized {
     required this.price,
     required this.duration,
     required this.elevation,
-    required this.rent,
     required this.images,
     required this.bedFeatures,
     required this.bathroomFeatures,
@@ -73,7 +71,6 @@ class AppartmentModel extends RentXSerialized {
     price = json['price'];
     duration = EnumUtil.strToEnum(HostelDuration.values, json['duration']);
     elevation = EnumUtil.strToEnum(Elevation.values, json['elevation']);
-    rent = EnumUtil.strToEnum(Rent.values, json['rent']);
     images = convertList(json['images'] as List, (p0) => p0);
     bedFeatures = convertList(
         json['bedFeatures'] as List, (p0) => BedFeaturesClass.fromJson(p0));
@@ -111,7 +108,6 @@ class AppartmentModel extends RentXSerialized {
       'price': price,
       'duration': duration!.name,
       'elevation': elevation!.name,
-      'rent': rent!.name,
       'images': images == null ? [] : images.map((e) => e).toList(),
       'bedFeatures': bedFeatures == null
           ? []
